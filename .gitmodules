@@ -4,9 +4,6 @@
 [submodule "3rdParty/php/Nette"]
 	path = 3rdParty/php/Nette
 	url = git://github.com/nette/nette.git
-[submodule "php/Exchange"]
-	path = php/Exchange
-	url = git://github.com/h4kuna/Exchange.git
 [submodule "3rdParty/js/jQuery"]
 	path = 3rdParty/js/jQuery
 	url = git://github.com/jquery/jquery.git
@@ -19,3 +16,6 @@
 [submodule "3rdParty/php/webLoader"]
 	path = 3rdParty/php/webLoader
 	url = git@github.com:h4kuna/WebLoader.git
+[submodule "php/Exchange"]
+	path = php/Exchange
+	url = git@github.com:h4kuna/Exchange.git
