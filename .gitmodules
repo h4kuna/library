@@ -7,3 +7,12 @@
 [submodule "php/Exchange"]
 	path = php/Exchange
 	url = git://github.com/h4kuna/Exchange.git
+[submodule "3rdParty/js/jQuery"]
+	path = 3rdParty/js/jQuery
+	url = git://github.com/jquery/jquery.git
+[submodule "3rdParty/js/jQuery-ui"]
+	path = 3rdParty/js/jQuery-ui
+	url = git://github.com/jquery/jquery-ui.git
+[submodule "3rdParty/php/webLoader"]
+	path = 3rdParty/php/webLoader
+	url = git://github.com/h4kuna/WebLoader.git
