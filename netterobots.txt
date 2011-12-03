@@ -1,9 +1,7 @@
-Disallow: /3rdParty/php/Nette-minified
-Disallow: /3rdParty/php/texy.minified
-Disallow: /3rdParty/php/dibi-minified
-Disallow: /3rdParty/css
-Disallow: /3rdParty/js
 Disallow: /css
 Disallow: /js
-Disallow: /3rdParty/php/Zend
-Disallow: /Exchange
+Disallow: /3rdParty/php/Nette/client-side
+Disallow: /3rdParty/php/Nette/tests
+Disallow: /3rdParty/php/Texy/documentation
+Disallow: /3rdParty/php/Texy/examples
+Disallow: /3rdParty/php/Texy/icons

@@ -1,0 +1,9 @@
+[submodule "3rdParty/php/Texy"]
+	path = 3rdParty/php/Texy
+	url = git://github.com/dg/texy.git
+[submodule "3rdParty/php/Nette"]
+	path = 3rdParty/php/Nette
+	url = git://github.com/nette/nette.git
+[submodule "php/Exchange"]
+	path = php/Exchange
+	url = git://github.com/h4kuna/Exchange.git
