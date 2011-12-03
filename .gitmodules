@@ -16,3 +16,6 @@
 [submodule "3rdParty/php/Texyla"]
 	path = 3rdParty/php/Texyla
 	url = git://github.com/janmarek/Texyla.git
+[submodule "3rdParty/php/webLoader"]
+	path = 3rdParty/php/webLoader
+	url = git@github.com:h4kuna/WebLoader.git
