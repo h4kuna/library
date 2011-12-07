@@ -4,6 +4,8 @@ namespace Utility;
 
 use Nette\Web;
 
+class_alias('Nette\Diagnostics\Debugger', 'Nette\Tools');
+
 /**
  * wrapper nad Nette\Web\Ftp
  */

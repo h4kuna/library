@@ -19,3 +19,6 @@
 [submodule "php/Exchange"]
 	path = php/Exchange
 	url = git@github.com:h4kuna/Exchange.git
+[submodule "3rdParty/php/original.addons"]
+	path = 3rdParty/php/original.addons
+	url = git://github.com/nette/addons.git
