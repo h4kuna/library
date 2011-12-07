@@ -7,7 +7,8 @@ use Nette\Web;
 /**
  * wrapper nad Nette\Web\Ftp
  */
-class Ftp extends Web\Ftp {
+class Ftp extends Web\Ftp
+{
 	const SERVER = 'server';
 	const USER = 'user';
 	const PASSWORD = 'password';
@@ -23,14 +24,30 @@ class Ftp extends Web\Ftp {
 
 	/** @var array */
 	private $config = array();
+//-----------------inherit method
+	/**
+	 * Checks if file or directory exists.
+	 * @param  string
+	 * @return bool
+	 */
+	public function fileExists($file)
+	{
+		$list = $this->nlist($file);
+		if (empty($list))
+			return FALSE;
+		return is_array($list);
+	}
 
-	public function __construct(array $config=NULL) {
+//-----------------my method
+	public function __construct(array $config=NULL)
+	{
 		parent::__construct();
 		if ($config)
 			$this->connection($config);
 	}
 
-	public function __call($name, $args) {
+	public function __call($name, $args)
+	{
 		$this->letsConnect();
 		if (empty($args))
 			switch ($name) {
@@ -47,7 +64,8 @@ class Ftp extends Web\Ftp {
 	 *
 	 * @param array $config
 	 */
-	public function connection(array $config) {
+	public function connection(array $config)
+	{
 		$this->setConfig($config);
 
 		if ($this->config[self::LAZY]) {
@@ -77,14 +95,16 @@ class Ftp extends Web\Ftp {
 	 * vrati se na domovskou slozku
 	 * @return bool
 	 */
-	public function goRoot() {
+	public function goRoot()
+	{
 		return $this->chdir($this->config[self::ROOT]);
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function isConnected() {
+	public function isConnected()
+	{
 		return $this->connected;
 	}
 
@@ -93,7 +113,8 @@ class Ftp extends Web\Ftp {
 	 * @param string $from
 	 * @param string $to
 	 */
-	public function move($from, $to) {
+	public function move($from, $to)
+	{
 		$this->letsConnect();
 		$home = $this->pwd();
 		$end = dirname($to);
@@ -109,7 +130,8 @@ class Ftp extends Web\Ftp {
 	 * @param path $to
 	 * @return bool
 	 */
-	public function uploadFile($file, $to) {
+	public function uploadFile($file, $to)
+	{
 		$this->letsConnect();
 		$result = NULL;
 		if (!\file_exists($file))
@@ -137,7 +159,8 @@ class Ftp extends Web\Ftp {
 		return $res;
 	}
 
-	public function downloadFile($file, $remoteFile) {
+	public function downloadFile($file, $remoteFile)
+	{
 		$this->letsConnect();
 		if ($this->fileExists($remoteFile)) {
 			\Utility\FileTools::mkDir($file);
@@ -154,7 +177,8 @@ class Ftp extends Web\Ftp {
 	 * srovna soubory pro zobrazeni
 	 * @param array $out
 	 */
-	public function fileList(array &$out) {
+	public function fileList(array &$out)
+	{
 		$files = $this->nlist();
 
 		foreach ($files as $file) {
@@ -183,7 +207,8 @@ class Ftp extends Web\Ftp {
 	/**
 	 * pripoji se k ftp pokud jsou nastavene parametry
 	 */
-	protected function letsConnect() {
+	protected function letsConnect()
+	{
 		$this->connected || $this->connection(array());
 	}
 
@@ -192,7 +217,8 @@ class Ftp extends Web\Ftp {
 	 * @param array $config
 	 * @return void
 	 */
-	private function setConfig(array & $config) {
+	private function setConfig(array & $config)
+	{
 		if (!empty($this->config))
 			return;
 		$this->config = self::param4Connect('', '', '');
@@ -209,7 +235,8 @@ class Ftp extends Web\Ftp {
 		unset($v);
 	}
 
-	public function folderTree($path, array &$tree) {
+	public function folderTree($path, array &$tree)
+	{
 		foreach ($this->nlist($path) as $dir) {
 			$base = basename($dir);
 			if ($base == '..' || $base == '.')
@@ -221,13 +248,15 @@ class Ftp extends Web\Ftp {
 		}
 	}
 
-	public function removeFiles(array $directories) {
+	public function removeFiles(array $directories)
+	{
 		foreach ($directories as $directory) {
 			$this->removeIterator($directory);
 		}
 	}
 
-	public function removeIterator($directory, $self=FALSE) {
+	public function removeIterator($directory, $self=FALSE)
+	{
 		$files = $this->nlist($directory);
 		if ($files == FALSE) {
 			$files = array();
@@ -260,12 +289,14 @@ class Ftp extends Web\Ftp {
 	 * @param bool $lazy
 	 * @return array
 	 */
-	public static function param4Connect($server, $user, $pass, $root=NULL, $passive=TRUE, $lazy=TRUE) {
+	public static function param4Connect($server, $user, $pass, $root=NULL, $passive=TRUE, $lazy=TRUE)
+	{
 		return array(self::SERVER => $server, self::USER => $user, self::PASSWORD => $pass,
 				self::ROOT => $root, self::PASSIVE => $passive, self::LAZY => $lazy);
 	}
 
-	public static function protocolForm($host, $user, $pass, $path='/', $port=21) {
+	public static function protocolForm($host, $user, $pass, $path='/', $port=21)
+	{
 		return "ftp://$user:$pass@$host:" . $port . $path;
 	}
 
@@ -275,7 +306,8 @@ class Ftp extends Web\Ftp {
 	 * @param mix $def
 	 * @return mix
 	 */
-	private static function set($val, $def=NULL) {
+	private static function set($val, $def=NULL)
+	{
 		return!empty($val) ? $val : $def;
 	}
 
