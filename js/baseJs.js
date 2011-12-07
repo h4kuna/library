@@ -21,7 +21,7 @@ function flashMessage ()
 		'position': 'fixed',
 		'left': '20%',
 		'right': '20%',
-		'top': '10%',
+		'top': '6%',
 		'height': 'auto'
 	}).animate({
 		opacity: 0.9
