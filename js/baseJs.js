@@ -53,4 +53,7 @@ $(document).ready(function(){
 
 	//vlozeni kurzoru
 	$('.cursor').focus();
+
+	$.datepicker.setDefaults($.datepicker.regional['cs']);
+	$.datepicker.setDefaults({'firstDay': 1, 'duration': 'fast', 'minDate': 0, 'dateFormat': 'yy-mm-dd'})
 })
