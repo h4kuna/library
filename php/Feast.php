@@ -2,7 +2,8 @@
 
 namespace Utility;
 
-class Feast extends NonObject {
+class Feast extends NonObject
+{
 	const CZECH_DATE_ZERO = 'd.m.Y';
 	const CZECH_DATE_ZERO_SHORT = 'd.m.y';
 
@@ -10,25 +11,43 @@ class Feast extends NonObject {
 	 * vrati nazev dne v cestine
 	 * @return string
 	 */
-	static public function nameOfDay($day = NULL) {
-		if ($day === NULL)
+	static public function nameOfDay($day = NULL)
+	{
+		if ($day === NULL) {
 			$day = (int) date('w');
-
-		switch ($day) {
-			case 0:	return 'Neděle';
-			case 1: return 'Pondělí';
-			case 2: return 'Úterý';
-			case 3: return 'Středa';
-			case 4: return 'Čtvrtek';
-			case 5: return 'Pátek';
-			case 6: return 'Sobota';
-			case -1: return '';
-			default: throw new \Exception('Invalid number for day, interval is 0-6, 0 = Sunday');
 		}
+
+		static $days = array('Neděle', 'Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota');
+
+		if (isset($days[$day])) {
+			return $days[$day];
+		}
+
+		if ($day < 0) {
+			return 0;
+		}
+
+		throw new \Exception('Invalid number for day, interval is 0-6, 0 = Sunday');
 	}
 
-	static public function nameOfMonth($month = NULL) {
+	static public function nameOfMonth($month = NULL)
+	{
+		if ($day === NULL) {
+			$day = (int) date('n');
+		}
 
+		static $days = array(1 => 'Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen',
+				'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec');
+
+		if (isset($days[$day])) {
+			return $days[$day];
+		}
+
+		if ($day < 1) {
+			return 0;
+		}
+
+		throw new \Exception('Invalid number for day, interval is 1-12.');
 	}
 
 	/**
@@ -36,7 +55,8 @@ class Feast extends NonObject {
 	 * @param $date string CZECH FORMAT
 	 * @return date
 	 */
-	static public function czechDate2Sql($date='01.01.1991') {
+	static public function czechDate2Sql($date='01.01.1991')
+	{
 		if (empty($date))
 			return NULL;
 		$date = explode('.', $date);
@@ -51,7 +71,8 @@ class Feast extends NonObject {
 	 * @param bool $int TRUE - zobrazi jako int jinak jako float
 	 * @return number
 	 */
-	static public function age($day, $month, $year, $int=TRUE) {
+	static public function age($day, $month, $year, $int=TRUE)
+	{
 		$age = (time() - mktime(0, 0, 0, $month, $day, $year) ) / 31557600;
 		return ($int) ? (int) $age : $age;
 	}
@@ -61,7 +82,8 @@ class Feast extends NonObject {
 	 * @param int $year -rok pro ktrery chci zjistit
 	 * @return int
 	 */
-	static public function februaryOfDay($year) {
+	static public function februaryOfDay($year)
+	{
 		return checkdate(2, 29, $year) ? 29 : 28;
 	}
 
@@ -71,7 +93,8 @@ class Feast extends NonObject {
 	 * @param int $month
 	 * @return string
 	 */
-	static public function getName($day=FALSE, $month=FALSE) {
+	static public function getName($day=FALSE, $month=FALSE)
+	{
 		if (\is_string($day))
 			$day = new \DateTime($day);
 
