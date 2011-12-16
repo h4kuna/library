@@ -94,6 +94,7 @@ class DatePicker extends Forms\Controls\BaseControl
 		if ($min !== NULL) $control->min = $min->format(self::W3C_DATE_FORMAT);
 		if ($max !== NULL) $control->max = $max->format(self::W3C_DATE_FORMAT);
 		if ($this->value) $control->value = $this->value->format(self::W3C_DATE_FORMAT);
+		$control->autocomplete = 'off';
 		return $control;
 	}
 
