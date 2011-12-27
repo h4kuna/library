@@ -63,7 +63,8 @@ abstract class DbModel extends BaseModel implements IDbModel
 		return parent::__call($name, $args);
 	}
 
-	public function shave(array $data) {
+	public function shave(array $data)
+	{
 		return array_intersect_key($data, $this->mapper);
 	}
 
@@ -255,6 +256,17 @@ abstract class DbModel extends BaseModel implements IDbModel
 				$data[$column] = call_user_func_array($f, array($data, $column, $args));
 			}
 		}
+	}
+
+	protected function fetchSingle($res)
+	{
+		if (!$res)
+			return $res;
+		$data = $res->toArray();
+		if (count($data) == 1) {
+			return current($data);
+		}
+		return $data;
 	}
 
 //	private function setMapper()
