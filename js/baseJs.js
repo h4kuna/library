@@ -52,5 +52,7 @@ $(document).ready(function(){
 	flashMessage();
 
 	//vlozeni kurzoru
-	$('.cursor').focus();
+	if(!$(':focus').length) {
+		$('.cursor').focus();
+	}
 })
