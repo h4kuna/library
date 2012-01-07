@@ -69,8 +69,9 @@ class Validators extends \Utility\NonObject
 		return empty($array[$key]) ? NULL : $array[$key];
 	}
 
-	public static function compareDate(array $data, $col, $dateTo) {
-		if($data[$col] && $data[$dateTo] && $data[$col] >= $data[$dateTo]) {
+	public static function compareDate(array $data, $col, $dateTo)
+	{
+		if ($data[$col] && $data[$dateTo] && $data[$col] >= $data[$dateTo]) {
 			throw new \Nette\InvalidStateException('Date from is higger tned date to.');
 		}
 		return $data[$col];
@@ -78,7 +79,24 @@ class Validators extends \Utility\NonObject
 
 	public static function bool(array $array, $key)
 	{
-		return (bool)$array[$key];
+		return (bool) $array[$key];
+	}
+
+	public static function dateTime(array $array, $key)
+	{
+		if(!($array[$key] instanceof \DateTime)) {
+			$array[$key] = new \DateTime($array[$key]);
+		}
+		return $array[$key]->format(\DateTime::ISO8601);
+	}
+
+	public static function date(array $array, $key)
+	{
+		if(!($array[$key] instanceof \DateTime)) {
+			$array[$key] = new \DateTime($array[$key]);
+		}
+
+		return $array[$key]->format('Y-m-d');
 	}
 
 }
