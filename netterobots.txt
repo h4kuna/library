@@ -8,3 +8,4 @@ Disallow: /3rdParty/php/Texy/documentation
 Disallow: /3rdParty/php/Texy/examples
 Disallow: /3rdParty/php/Texy/icons
 Disallow: /3rdParty/php/Texyla
+Disallow: /3rdParty/php/Zend

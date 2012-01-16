@@ -54,4 +54,9 @@ abstract class BaseModel extends Object {
 		return $this->cache($namespace);
 	}
 
+	public function __toString()
+	{
+		return $this->getReflection()->getName();
+	}
+
 }

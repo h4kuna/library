@@ -1,12 +1,15 @@
+
+/**
+ * vlkadat do onclick pac to jinak nemaka ve firefoxu
+ */
 function confirmDelete(delUrl, message) {
 	if(!message) {
 		message = 'Opravdu si přejete mazat?';
 	}
-
 	if (confirm(message)) {
 		document.location = delUrl;
-		return true;
 	}
+
 	return false;
 }
 

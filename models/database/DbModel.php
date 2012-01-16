@@ -37,6 +37,15 @@ abstract class DbModel extends BaseModel implements IDbModel
 	{
 		parent::__construct($container);
 		$this->conn = $this->container->database;
+// @todo vytvaret alias?
+//		$alias = ' ';
+//		$t = explode('_', $this->table);
+//
+//		foreach($t as $v)
+//		{
+//			$alias .= substr($v, 0, 1);
+//		}
+
 		$this->db = $this->conn->table($this->table);
 		$this->conn->setCacheStorage($this->container->cacheStorage);
 
@@ -267,6 +276,15 @@ abstract class DbModel extends BaseModel implements IDbModel
 			return current($data);
 		}
 		return $data;
+	}
+
+	/**
+	 * literal
+	 * @param type $v
+	 * @return \Nette\Database\SqlLiteral
+	 */
+	protected function l($v) {
+		return new \Nette\Database\SqlLiteral($v);
 	}
 
 //	private function setMapper()
