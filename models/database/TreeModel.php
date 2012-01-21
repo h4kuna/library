@@ -3,12 +3,13 @@
 namespace Models;
 
 use Nette\DI\Container,
-		Nette\Diagnostics\Debugger;
+		Nette\Diagnostics\Debugger,
+	  Nette\Database\SqlLiteral;
 
 /**
  * @property-read $tree
  */
-abstract class TreeModel extends DbModel
+abstract class TreeModel extends DbPrefix
 {
 	const ID = 'id';
 	const PARENT_ID = 'parent_id';
@@ -89,36 +90,31 @@ abstract class TreeModel extends DbModel
 			$this->rollback();
 			throw new \RuntimeException('Parent doesn\'t exists.');
 		}
-		//son
-		$deep = 1;
-		$markR = '>=';
-		$markL = '>';
-		$correct = 0;
-		$colL = $row[$r];
-
-		if ($where == 'after') {
-			$markR = '>';
-			$deep = 0;
-			$id = $row[$p];
-			$correct = 1;
-		} elseif ($where == 'before') {
-			$markL = '>=';
-			$deep = 0;
-			$correct = -1;
-			$id = $row[$p];
-			$colL = $row[$l];
+		
+		$data += (array) $row;
+		switch ($where) {
+			case 'son':
+				$rUpdate = $data[$l] = $row[$r];
+				++$data[$r];
+				$data[$p] = $id;
+				++$data[$d];
+				break;
+			case 'after':
+				$data[$l] = $row[$r] + 1;
+				$rUpdate = $data[$r] += 2;
+				break;
+			case 'before':
+				$rUpdate = $data[$r] = $row[$l] + 1;
+				break;
+			default:
+				throw new \Nette\NotImplementedException('Bad choise.');
 		}
 
 		$this->conn->query('UPDATE ' . $this->table . ' SET ' . $l . ' = ' . $l . ' + 2 WHERE ' .
-						$l . ' ' . $markL . ' ?;', $colL);
+						$l . ' >= ?;', $data[$l]);
 		$this->conn->query('UPDATE ' . $this->table . ' SET ' . $r . ' = ' . $r . ' + 2 WHERE ' .
-						$r . ' ' . $markR . ' ?;', $row[$r]);
+						$r . ' >= ?;', $rUpdate);
 
-		$data[$l] = $row[$r] + $correct;
-		$data[$r] = $row[$r] + $correct + 1;
-		$data[$d] = $row[$d] + $deep;
-
-		$data[$this->field[self::PARENT_ID]] = $id;
 		try {
 			$res = $this->insert($data, $lastId);
 		} catch (\PDOException $e) {
@@ -129,7 +125,6 @@ abstract class TreeModel extends DbModel
 			throw $e;
 		}
 		$this->commit();
-		//$this->rollback();
 		return $res;
 	}
 
@@ -295,7 +290,7 @@ class TreeObject extends \Nette\Object //implements \Iterator
 
 	private function fill($data)
 	{
-		
+
 		pd($data);
 	}
 

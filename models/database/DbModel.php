@@ -19,6 +19,8 @@ abstract class DbModel extends BaseModel implements IDbModel
 	protected $primary;
 	private static $inTransaction = FALSE;
 
+	private $sqlCalc = 0;
+
 	/**
 	 * moznosti zapisu
 	 * column => ':fce' // doplni na \Validators::fce($data, $column)
@@ -65,7 +67,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 	{
 		$exp = explode('By', $name);
 		if (count($exp) == 2) {
-			$exp[1] = ltrim(preg_replace('~([A-Z])~', '_$1', $exp[1]), '_');
+			$exp[1] = substr(preg_replace('~([A-Z])~', '_$1', $exp[1]), 1);
 			$args += array(1 => '', 2 => strtolower($exp[1]));
 			return call_user_func_array(array($this, $exp[0]), $args);
 		}
@@ -147,17 +149,41 @@ abstract class DbModel extends BaseModel implements IDbModel
 
 	public function findAll($columns='*', $page=NULL, $itemsPerPage=50)
 	{
-		$res = $this->getDb()->select($columns);
+		$sqlCalc = NULL;
+		if($this->sqlCalc === 1) {
+			$sqlCalc = 'SQL_CALC_FOUND_ROWS ';
+			$this->sqlCalc = 2;
+		}
+		$res = $this->getDb()->select($sqlCalc . $columns);
 		if ($page > 0) {
 			return $res->page($page, $itemsPerPage);
 		}
 		return $res;
 	}
 
+	/**
+	 * switch countig for use SQL_CALC_FOUND_ROWS
+	 * call this method before findAll
+	 * @example
+	 * $model->willCount(); //maybe faster :)
+	 * $model->findAll('*', 1);
+	 * dump($model->count());
+	 */
+	public function willCount() {
+		$this->sqlCalc = 1;
+	}
+
 	public function count()
 	{
-		$res = $this->findAll('COUNT(*) AS c')->fetch();
-		return intval($res->c);
+		if($this->sqlCalc === 2) {
+			$this->sqlCalc = 0;
+			$sql = $this->conn->query('SELECT FOUND_ROWS() AS c');
+		}
+		else {
+			$sql = self::findAll('COUNT(*) AS c');
+		}
+
+		return intval($sql->fetch()->c);
 	}
 
 //-----------------transaction
