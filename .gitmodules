@@ -13,3 +13,6 @@
 [submodule "3rdParty/php/original.addons"]
 	path = 3rdParty/php/original.addons
 	url = git://github.com/nette/addons.git
+[submodule "3rdParty/php/webLoader2"]
+	path = 3rdParty/php/webLoader2
+	url = git@github.com:h4kuna/WebLoader.git
