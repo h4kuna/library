@@ -28,7 +28,7 @@ abstract class BaseModel extends Object {
 	 * @return Nette\Caching\Cache
 	 */
 	public function cache($namespace) {
-		return $this->container->cacheLoader->getCache($namespace);
+		return $this->container->cacheLoader->getLoader($namespace);
 	}
 
 	protected function setSession($namespace = NULL, $expiretion='+14 days') {
@@ -44,7 +44,7 @@ abstract class BaseModel extends Object {
 	}
 
 	public function getModels(){
-		return $this->container->modelLoader;
+		return $this->container->models;
 	}
 
 	public function getCache($namespace = NULL) {

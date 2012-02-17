@@ -99,6 +99,25 @@ class Validators extends \Utility\NonObject
 		return $array[$key]->format('Y-m-d');
 	}
 
+	/** rodné číslo */
+	public static function icNumber(array $array, $key)
+	{
+		$array[$key] = preg_replace('~[^0-9]~', '', $array[$key]);
+		return ltrim($array[$key], '0');
+	}
+
+	public static function rcNumber(array $array, $key)
+	{
+		$array[$key] = preg_replace('~[^0-9/]~', '', $array[$key]);
+		return $array[$key];
+	}
+
+	public static function insNumber(array $array, $key)
+	{
+		$array[$key] = preg_replace('~[^0-9/]~', '', $array[$key]);
+		return 'INS '. $array[$key];
+	}
+
 	public static function email(array $array, $key)
 	{
 		$atom = "[-a-z0-9!#$%&'*+/=?^_`{|}~]"; // RFC 5322 unquoted characters in local-part
@@ -124,11 +143,11 @@ class Validators extends \Utility\NonObject
 		}
 
 		foreach ($num as $item) {
-			if($max == 0xffff) {
+			if ($max == 0xffff) {
 				$item = hexdec($item);
 			}
 
-			if(0 > $item || $item > $max) {
+			if (0 > $item || $item > $max) {
 				throw new \Nette\InvalidStateException('Non valid ip address.', 3);
 			}
 		}

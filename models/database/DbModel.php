@@ -18,7 +18,6 @@ abstract class DbModel extends BaseModel implements IDbModel
 	protected $table = 'CHANGE IT';
 	protected $primary;
 	private static $inTransaction = FALSE;
-
 	private $sqlCalc = 0;
 
 	/**
@@ -86,7 +85,6 @@ abstract class DbModel extends BaseModel implements IDbModel
 		}
 
 		$this->prepareData($data);
-		unset($data[$by]);
 
 		if ($id === FALSE) {
 			return $this->getDb()->update($data);
@@ -97,8 +95,41 @@ abstract class DbModel extends BaseModel implements IDbModel
 	public function insert(array $data, $lastId=FALSE)
 	{
 		$this->prepareData($data);
-		$res = $this->db->insert($data);
-		return ($lastId) ? $this->lastInsertId() : $res;
+		try {
+			$res = $this->db->insert($data);
+			if ($lastId) {
+				if (isset($data[$this->primary])) {
+					$id = $data[$this->primary];
+				}
+				else {
+					$id = $this->lastInsertId();
+				}
+			}
+		} catch (\PDOException $e) {
+			if ($e->getCode() != 23000 || $lastId != TRUE) {
+				throw $e;
+			}
+			$found = array();
+			if (!preg_match_all('~\'(.*)\'~U', $e->getMessage(), $found)) {
+				throw $e;
+			}
+			if ($found[1][1] == 'PRIMARY') {
+				$found[1][1] = $this->primary;
+			}
+
+			//je to danne do pole aby bylo pozna ze nebyl zaznam vlozen/upraven
+			if (isset($data[$found[1][1]])) {
+				$id = $data[$found[1][1]];
+			} else {
+				$m = 'fetchBy' . ucfirst($found[1][1]);
+				$id = $this->{$m}($data[$found[1][1]], $this->primary)->{$this->primary};
+			}
+			$id = array('duplicity' => $id,
+					'column' => $found[1][1],
+					'all' => array($found[1][1] => $id));
+		}
+
+		return ($lastId) ? $id : $res;
 	}
 
 	public function delete($id, $column=NULL, $by=NULL)
@@ -150,7 +181,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 	public function findAll($columns='*', $page=NULL, $itemsPerPage=50)
 	{
 		$sqlCalc = NULL;
-		if($this->sqlCalc === 1) {
+		if ($this->sqlCalc === 1) {
 			$sqlCalc = 'SQL_CALC_FOUND_ROWS ';
 			$this->sqlCalc = 2;
 		}
@@ -162,6 +193,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 	}
 
 	/**
+	 * faster?? I mean NO!!
 	 * switch countig for use SQL_CALC_FOUND_ROWS
 	 * call this method before findAll
 	 * @example
@@ -169,17 +201,17 @@ abstract class DbModel extends BaseModel implements IDbModel
 	 * $model->findAll('*', 1);
 	 * dump($model->count());
 	 */
-	public function willCount() {
+	public function willCount()
+	{
 		$this->sqlCalc = 1;
 	}
 
 	public function count()
 	{
-		if($this->sqlCalc === 2) {
+		if ($this->sqlCalc === 2) {
 			$this->sqlCalc = 0;
 			$sql = $this->conn->query('SELECT FOUND_ROWS() AS c');
-		}
-		else {
+		} else {
 			$sql = self::findAll('COUNT(*) AS c');
 		}
 
@@ -309,7 +341,8 @@ abstract class DbModel extends BaseModel implements IDbModel
 	 * @param type $v
 	 * @return \Nette\Database\SqlLiteral
 	 */
-	protected function l($v) {
+	protected function l($v)
+	{
 		return new \Nette\Database\SqlLiteral($v);
 	}
 
