@@ -9,3 +9,4 @@ Disallow: /3rdParty/php/Texy/examples
 Disallow: /3rdParty/php/Texy/icons
 Disallow: /3rdParty/php/Texyla
 Disallow: /3rdParty/php/Zend
+Disallow: /3rdParty/php/original.addons/VisualPaginator
