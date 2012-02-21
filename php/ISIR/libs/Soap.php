@@ -14,9 +14,22 @@ class Soap extends \SoapClient
 				'exceptions' => 1,
 				'classmap' => array('getIsirPub0012Response' => __NAMESPACE__ . '\Response2',
 						'getIsirPub001Response' => __NAMESPACE__ . '\Response1',
-						)
+				)
 		);
 
-		parent::__construct($wsdl, $options);
+		$max = 3;
+		$i = 0;
+		do {
+			try {
+				parent::__construct($wsdl, $options);
+				$i = $max;
+			} catch (\SoapFault $e) {
+				if (FALSE === strstr($e->getMessage(), 'Parsing Schema')) {
+					throw $e;
+				}
+			}
+			++$i;
+		} while ($i < $max);
 	}
+
 }
