@@ -100,8 +100,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 			if ($lastId) {
 				if (isset($data[$this->primary])) {
 					$id = $data[$this->primary];
-				}
-				else {
+				} else {
 					$id = $this->lastInsertId();
 				}
 			}
@@ -181,9 +180,8 @@ abstract class DbModel extends BaseModel implements IDbModel
 	public function findAll($columns='*', $page=NULL, $itemsPerPage=50)
 	{
 		$sqlCalc = NULL;
-		if ($this->sqlCalc === 1) {
+		if ($this->sqlCalc) {
 			$sqlCalc = 'SQL_CALC_FOUND_ROWS ';
-			$this->sqlCalc = 2;
 		}
 		$res = $this->getDb()->select($sqlCalc . $columns);
 		if ($page > 0) {
@@ -203,19 +201,28 @@ abstract class DbModel extends BaseModel implements IDbModel
 	 */
 	public function willCount()
 	{
-		$this->sqlCalc = 1;
+		$this->sqlCalc = TRUE;
 	}
 
 	public function count()
 	{
-		if ($this->sqlCalc === 2) {
-			$this->sqlCalc = 0;
+		if ($this->sqlCalc) {
+			$this->sqlCalc = FALSE;
 			$sql = $this->conn->query('SELECT FOUND_ROWS() AS c');
 		} else {
 			$sql = self::findAll('COUNT(*) AS c');
 		}
 
 		return intval($sql->fetch()->c);
+	}
+
+	public function estimateCount()
+	{
+		if (!($this->conn->getSupplementalDriver() instanceof \Nette\Database\Drivers\MySqlDriver)) {
+			throw new \RuntimeException('Now is only for MySql!');
+		}
+		$res = $this->conn->fetch('SHOW TABLE STATUS LIKE \'' . $this->table . '\'');
+		return ($res['Engine'] == 'InnoDB') ? $res['Rows'] : NULL;
 	}
 
 //-----------------transaction
