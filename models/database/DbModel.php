@@ -96,7 +96,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 	{
 		$this->prepareData($data);
 		try {
-			$res = $this->db->insert($data);
+			$res = $this->getDb()->insert($data);
 			if ($lastId) {
 				if (isset($data[$this->primary])) {
 					$id = $data[$this->primary];
@@ -147,7 +147,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 		}
 
 		try {
-			$delete = $this->db->where($by, $id)->delete();
+			$delete = $this->getDb()->where($by, $id)->delete();
 			return ($out !== NULL) ? $out : $delete;
 		} catch (\PDOException $e) {
 			if ($e->getCode() == 23503) {
