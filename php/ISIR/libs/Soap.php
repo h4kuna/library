@@ -17,19 +17,7 @@ class Soap extends \SoapClient
 				)
 		);
 
-		$max = 3;
-		$i = 0;
-		do {
-			try {
-				parent::__construct($wsdl, $options);
-				$i = $max;
-			} catch (\SoapFault $e) {
-				if (FALSE === strstr($e->getMessage(), 'Parsing Schema')) {
-					throw $e;
-				}
-			}
-			++$i;
-		} while ($i < $max);
+		parent::__construct($wsdl, $options);
 	}
 
 }
