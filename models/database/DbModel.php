@@ -119,7 +119,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 
 				$found = array_search($found[1], $data);
 			} else {
-				if (!preg_match_all('~\'(.*)\'$~U', $e->getMessage(), $found)) {
+				if (!preg_match_all('~\'(.*)\'~U', $e->getMessage(), $found)) {
 					throw $e;
 				}
 				$found = ($found[1][1] == 'PRIMARY') ? $this->primary : $found[1][1];
@@ -245,7 +245,12 @@ abstract class DbModel extends BaseModel implements IDbModel
 
 	public function getVersion()
 	{
-		return floatval(substr($this->conn->query('SELECT version() AS v')->fetch()->v, 0, 3));
+		$cache = $this->getCache('Models');
+		$key = 'version';
+		if(isset($cache[$key])) {
+			return $cache[$key];
+		}
+		return $cache->save($key, floatval(substr($this->conn->query('SELECT version() AS v')->fetch()->v, 0, 3)), array(self::EXPIRE => 'tomorrow'));
 	}
 
 //-----------------transaction

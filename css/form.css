@@ -1,0 +1,8 @@
+input + span, select + span{
+	color: red;
+	margin-left: 3px;
+}
+
+input[type=checkbox]{
+	margin-right: 3px;
+}

@@ -1,0 +1,42 @@
+/*-----------------flashMessage----------------------------*/
+div#flash {
+	color: black;
+	background: white;
+	border: 1px solid black;
+	z-index: 20;
+}
+
+div#flash a#close{
+	float: right;
+	cursor: pointer;
+	font-weight: bolder;
+	padding: 2px;
+	background-color: white;
+	text-decoration: none;
+	color: black;
+	z-index: 22;
+}
+
+div.warning, div.info, div.error{
+	border: 1px solid black;
+	margin: 1%;
+	padding: 1%;
+	z-index: 21;
+	font-weight: bold;
+	font-size: 116%;
+}
+
+div.warning{
+	background: #FFF9D7;
+	border-color: #E2C822;
+}
+
+div.info{
+	background: #8FFF9E;
+	border-color: #4AEF60;
+}
+
+div.error{
+	background: #FF5F5F;
+	border-color: #EF4A51;
+}

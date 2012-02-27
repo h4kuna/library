@@ -1,0 +1,14 @@
+div.clear{
+	visibility: hidden;
+	clear: both;
+}
+
+.hidden, .hiddenOut{
+	visibility: hidden;
+}
+
+.out, .hiddenOut{
+	position: absolute;
+	top: -999px;
+	left: -999px;
+}
