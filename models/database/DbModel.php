@@ -122,7 +122,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 				if (!preg_match_all('~\'(.*)\'$~U', $e->getMessage(), $found)) {
 					throw $e;
 				}
-				$found = ($found[1][1] == 'PRIMARY')? $this->primary: $found[1][1];
+				$found = ($found[1][1] == 'PRIMARY') ? $this->primary : $found[1][1];
 			}
 
 			//je to danne do pole aby bylo pozna ze nebyl zaznam vlozen/upraven
@@ -232,6 +232,20 @@ abstract class DbModel extends BaseModel implements IDbModel
 		}
 		$res = $this->conn->fetch('SHOW TABLE STATUS LIKE \'' . $this->table . '\'');
 		return ($res['Engine'] == 'InnoDB') ? $res['Rows'] : NULL;
+	}
+
+	public function getFields()
+	{
+		$col = NULL;
+		if (func_num_args()) {
+			$col = 'FROM ' . implode(' ', func_get_args());
+		}
+		return $this->conn->query('SHOW COLUMNS ' . $col . ' FROM ' . $this->table . ';')->fetchAll();
+	}
+
+	public function getVersion()
+	{
+		return floatval(substr($this->conn->query('SELECT version() AS v')->fetch()->v, 0, 3));
 	}
 
 //-----------------transaction

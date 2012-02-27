@@ -9,7 +9,7 @@ use Nette\DI\Container,
 /**
  * @property-read $tree
  */
-abstract class TreeModel extends DbPrefix
+abstract class TreeModel extends DbModel
 {
 	const ID = 'id';
 	const PARENT_ID = 'parent_id';
