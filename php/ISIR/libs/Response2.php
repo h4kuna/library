@@ -11,10 +11,6 @@ class Response2 extends \stdClass implements \Iterator
 
 	public function current()
 	{
-		if (!is_int(key($this->result))) {
-			return NULL;
-		}
-
 		$current = &$this->result[$this->key()];
 		if (isset($current->cas)) {
 //nasledujici klice odpovidaj sloupcum v db tabulce
@@ -55,9 +51,13 @@ class Response2 extends \stdClass implements \Iterator
 
 	public function rewind()
 	{
+		if($this->result instanceof \stdClass) {
+			$this->result = array($this->result);
+		}
+
 		reset($this->result);
 		$this->counter = $this->maxId = 0;
-		$this->size = count($this->result);
+		$this->size = $this->count();
 	}
 
 	public function count()

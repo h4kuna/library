@@ -108,24 +108,33 @@ abstract class DbModel extends BaseModel implements IDbModel
 			if ($e->getCode() != 23000 || $lastId != TRUE) {
 				throw $e;
 			}
+
+			$v = $this->getVersion();
 			$found = array();
-			if (!preg_match_all('~\'(.*)\'~U', $e->getMessage(), $found)) {
-				throw $e;
-			}
-			if ($found[1][1] == 'PRIMARY') {
-				$found[1][1] = $this->primary;
+
+			if ($v < 5.1) {
+				if (!preg_match('~\'(.*)\'~U', $e->getMessage(), $found)) {
+					throw $e;
+				}
+
+				$found = array_search($found[1], $data);
+			} else {
+				if (!preg_match_all('~\'(.*)\'$~U', $e->getMessage(), $found)) {
+					throw $e;
+				}
+				$found = ($found[1][1] == 'PRIMARY')? $this->primary: $found[1][1];
 			}
 
 			//je to danne do pole aby bylo pozna ze nebyl zaznam vlozen/upraven
-			if (isset($data[$found[1][1]])) {
-				$id = $data[$found[1][1]];
+			if (isset($data[$found])) {
+				$id = $data[$found];
 			} else {
-				$m = 'fetchBy' . ucfirst($found[1][1]);
-				$id = $this->{$m}($data[$found[1][1]], $this->primary)->{$this->primary};
+				$m = 'fetchBy' . ucfirst($found);
+				$id = $this->{$m}($data[$found], $this->primary)->{$this->primary};
 			}
 			$id = array('duplicity' => $id,
-					'column' => $found[1][1],
-					'all' => array($found[1][1] => $id));
+					'column' => $found,
+					'all' => array($found => $id));
 		}
 
 		return ($lastId) ? $id : $res;

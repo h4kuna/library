@@ -13,7 +13,7 @@ class Soap extends \SoapClient
 				'encoding' => 'UTF-8',
 				'exceptions' => 1,
 				'classmap' => array('getIsirPub0012Response' => __NAMESPACE__ . '\Response2',
-						'getIsirPub001Response' => __NAMESPACE__ . '\Response1',
+						'getIsirPub001Response' => __NAMESPACE__ . '\Response2',
 				)
 		);
 

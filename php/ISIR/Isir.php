@@ -13,7 +13,7 @@ class Isir
 
 	public function __construct($wsdl)
 	{
-		$this->client = ($wsdl instanceof \SoapClient)? $wsdl: new Soap($wsdl);
+		$this->client = ($wsdl instanceof \SoapClient) ? $wsdl : new Soap($wsdl);
 	}
 
 	public function test()
@@ -23,7 +23,7 @@ class Isir
 
 	public function getByDate(\DateTime $date)
 	{
-		return $this->request('getIsirPub0012', $date->format(\DATE_ATOM));
+		return $this->request('getIsirPub001', array('Calendar_1' => $date->format(\DATE_ATOM)));
 	}
 
 	public function getById($id)
