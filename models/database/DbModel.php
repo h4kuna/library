@@ -247,7 +247,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 	{
 		$cache = $this->getCache('Models');
 		$key = 'version';
-		if(isset($cache[$key])) {
+		if (isset($cache[$key])) {
 			return $cache[$key];
 		}
 		return $cache->save($key, floatval(substr($this->conn->query('SELECT version() AS v')->fetch()->v, 0, 3)), array(self::EXPIRE => 'tomorrow'));
@@ -316,6 +316,11 @@ abstract class DbModel extends BaseModel implements IDbModel
 			$seq = $this->table . '_' . $this->primary . '_seq';
 		}
 		return $this->conn->lastInsertId($seq);
+	}
+
+	public function getConnection()
+	{
+		return $this->conn;
 	}
 
 //nastroje na upravu hodnot pred ulozenim do db

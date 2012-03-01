@@ -112,10 +112,15 @@ class Validators extends \Utility\NonObject
 		return $array[$key];
 	}
 
+	public static function implodeRc(array $array, $key)
+	{
+		return is_array($array[$key])? implode('/', $array[$key]): $array[$key];
+	}
+
 	public static function insNumber(array $array, $key)
 	{
 		$array[$key] = preg_replace('~[^0-9/]~', '', $array[$key]);
-		return 'INS '. $array[$key];
+		return 'INS ' . $array[$key];
 	}
 
 	public static function email(array $array, $key)
