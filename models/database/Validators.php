@@ -114,7 +114,15 @@ class Validators extends \Utility\NonObject
 
 	public static function implodeRc(array $array, $key)
 	{
-		return is_array($array[$key])? implode('/', $array[$key]): $array[$key];
+		if (!is_array($array[$key])) {
+			return $array[$key];
+		}
+
+		$rc = trim(implode('/', $array[$key]));
+		if ($rc == '/') {
+			return '';
+		}
+		return $rc;
 	}
 
 	public static function insNumber(array $array, $key)
