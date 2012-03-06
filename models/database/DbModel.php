@@ -170,7 +170,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 	{
 		if (!$by) {
 			$by = $this->primary;
-		} 
+		}
 		if (!$columns) {
 			$columns = '*';
 		}
