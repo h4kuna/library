@@ -116,7 +116,6 @@ abstract class DbModel extends BaseModel implements IDbModel
 				if (!preg_match('~\'(.*)\'~U', $e->getMessage(), $found)) {
 					throw $e;
 				}
-
 				$found = array_search($found[1], $data);
 			} else {
 				if (!preg_match_all('~\'(.*)\'~U', $e->getMessage(), $found)) {
@@ -124,7 +123,6 @@ abstract class DbModel extends BaseModel implements IDbModel
 				}
 				$found = ($found[1][1] == 'PRIMARY') ? $this->primary : $found[1][1];
 			}
-
 			//je to danne do pole aby bylo pozna ze nebyl zaznam vlozen/upraven
 			if (isset($data[$found])) {
 				$id = $data[$found];
