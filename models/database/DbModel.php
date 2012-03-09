@@ -142,8 +142,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 	{
 		$out = NULL;
 		if ($column && $id) {
-			//@todo mozna fetch :)
-			$out = $this->find($id, $column);
+			$out = $this->fetch($id, $column);
 		}
 
 		if (!$by) {
@@ -157,7 +156,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 			$delete = $this->getDb()->where($by, $id)->delete();
 			return ($out !== NULL) ? $out : $delete;
 		} catch (\PDOException $e) {
-			if ($e->getCode() == 23503) {
+			if (strstr($e->getMessage(), 'foreign key') !== FALSE) {
 				return $e;
 			}
 			throw $e;
