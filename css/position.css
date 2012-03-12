@@ -12,3 +12,15 @@ div.clear{
 	top: -999px;
 	left: -999px;
 }
+
+.left{
+	text-align: left;
+}
+
+.right{
+	text-align: right;
+}
+
+.center{
+	text-align: center;
+}
