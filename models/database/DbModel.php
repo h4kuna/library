@@ -85,11 +85,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 		}
 
 		$this->prepareData($data);
-
-		if ($id === FALSE) {
-			return $this->getDb()->update($data);
-		}
-		return $this->getDb()->where($by, $id)->update($data);
+		return $this->getCondition($by, $id)->update($data);
 	}
 
 	public function insert(array $data, $lastId=FALSE)
@@ -153,7 +149,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 		}
 
 		try {
-			$delete = $this->getDb()->where($by, $id)->delete();
+			$delete = $this->getCondition($by, $id)->delete();
 			return ($out !== NULL) ? $out : $delete;
 		} catch (\PDOException $e) {
 			if (strstr($e->getMessage(), 'foreign key') !== FALSE) {
@@ -359,15 +355,12 @@ abstract class DbModel extends BaseModel implements IDbModel
 		}
 	}
 
-	protected function fetchSingle($res)
+	protected function getCondition($by, $id)
 	{
-		if (!$res)
-			return $res;
-		$data = $res->toArray();
-		if (count($data) == 1) {
-			return current($data);
+		if ($id === FALSE) {
+			return $this->getDb();
 		}
-		return $data;
+		return $this->getDb()->where($by, $id);
 	}
 
 	/**
