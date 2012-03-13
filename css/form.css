@@ -23,3 +23,6 @@ form th {
 	text-align: right;
 }
 
+form table th, form table td{
+	border: none;
+}

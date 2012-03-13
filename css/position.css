@@ -24,3 +24,8 @@ div.clear{
 .center{
 	text-align: center;
 }
+
+ul.menu li{
+	display:inline;
+	margin-right: 5px;
+}
