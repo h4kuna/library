@@ -33,7 +33,7 @@ class Base64Array extends \ArrayIterator
 		}
 
 		if ($this->check > 0 && strlen($base) > $this->check) {
-			throw new \RuntimeException('Length of encode string is higger than is allowed.');
+			throw new \RuntimeException('Length of encode string is higger than is allowed. '. $base);
 		}
 
 		return $base;
