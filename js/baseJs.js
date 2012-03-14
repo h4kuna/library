@@ -1,5 +1,6 @@
 
 /**
+ * @deprecated
  * vlkadat do onclick pac to jinak nemaka ve firefoxu
  */
 function confirmDelete(delUrl, message) {
@@ -38,15 +39,6 @@ function flashMessage ()
 }
 
 
-function confirmDialog(delUrl, message) {
-	if(!message)
-		message = 'Opravdu to chcete smazat?';
-	if (confirm(message)) {
-		document.location = delUrl;
-	}
-}
-
-
 /**
  * funkce spouštěné po načtení prohlížeče
  */
@@ -58,4 +50,20 @@ $(document).ready(function(){
 	if(!$(':focus').length) {
 		$('.cursor').focus();
 	}
+
+	$('a[delete]').click(function(){
+		$this = $(this);
+		message = $this.attr('message');
+		if(!message) {
+			message = 'Opravdu si přejete mazat?';
+		}
+
+		if (confirm(message)) {
+			$this.attr('href', $this.attr('delete'));
+			return true;
+		}
+
+		return false;
+	});
+
 })
