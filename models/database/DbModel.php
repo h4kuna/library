@@ -314,7 +314,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 	}
 
 //nastroje na upravu hodnot pred ulozenim do db
-	final protected function prepareData(array &$data)
+	protected function prepareData(array &$data)
 	{
 		foreach ($this->mapper as $column => $fce) {
 

@@ -5,12 +5,13 @@ namespace Models;
 use Nette\Caching\Cache,
 		Nette\Object,
 		Nette\DI\Container;
+
 /**
  * @property-read $models
  * @property-read Nette\Caching\Cache $cache
  */
-abstract class BaseModel extends Object {
-
+abstract class BaseModel extends Object
+{
 	/** @var Container */
 	protected $container;
 
@@ -19,7 +20,8 @@ abstract class BaseModel extends Object {
 
 	const EXPIRE = Cache::EXPIRATION;
 
-	public function __construct(Container $container) {
+	public function __construct(Container $container)
+	{
 		$this->container = $container;
 	}
 
@@ -27,11 +29,13 @@ abstract class BaseModel extends Object {
 	 * @param string $namespace
 	 * @return Nette\Caching\Cache
 	 */
-	public function cache($namespace) {
+	public function cache($namespace)
+	{
 		return $this->container->cacheLoader->getLoader($namespace);
 	}
 
-	protected function setSession($namespace = NULL, $expiretion='+14 days') {
+	protected function setSession($namespace = NULL, $expiretion='+14 days')
+	{
 		if ($namespace === NULL) {
 			$namespace = get_class($this);
 		}
@@ -39,16 +43,19 @@ abstract class BaseModel extends Object {
 		$this->session->setExpiration($expiretion);
 	}
 
-	public function getUser(){
+	public function getUser()
+	{
 		return $this->container->user;
 	}
 
-	public function getModels(){
+	public function getModels()
+	{
 		return $this->container->models;
 	}
 
-	public function getCache($namespace = NULL) {
-		if(!$namespace) {
+	public function getCache($namespace = NULL)
+	{
+		if (!$namespace) {
 			$namespace = get_class($this);
 		}
 		return $this->cache($namespace);
@@ -57,6 +64,12 @@ abstract class BaseModel extends Object {
 	public function __toString()
 	{
 		return $this->getReflection()->getName();
+	}
+
+	/**  @return \Nette\Security\Identity */
+	public function getIdentity()
+	{
+		return $this->container->getByType('Nette\Security\User')->getIdentity();
 	}
 
 }
