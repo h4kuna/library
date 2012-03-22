@@ -99,6 +99,17 @@ class Validators extends \Utility\NonObject
 		return $array[$key]->format('Y-m-d');
 	}
 
+	public function checkDate(array $array, $key)
+	{
+		$date = ($array[$key] instanceof \DateTime) ? $array[$key]->format('Y-m-d') : $array[$key];
+		list($year, $month, $day) = explode('-', $date);
+
+		if (!checkdate($month, $day, $year)) {
+			throw new \Nette\InvalidStateException('Invalid date. ' . $date, 4);
+		}
+		return $array[$key];
+	}
+
 	/** rodné číslo */
 	public static function icNumber(array $array, $key)
 	{
@@ -123,6 +134,25 @@ class Validators extends \Utility\NonObject
 			return '';
 		}
 		return $rc;
+	}
+
+	public static function implodeBirtday(array $array, $key)
+	{
+		if (!is_array($array[$key])) {
+			return $array[$key];
+		}
+
+		if (strlen(implode($array[$key])) < 8) {
+			return NULL;
+		}
+
+		if (isset($array[$key]['year'])) {
+			//use key as year, day, month
+			return sprintf("%04d-%02d-%02d", $array[$key]['year'], $array[$key]['month'], $array[$key]['day']);
+		}
+
+		//key is 0-year, 1-month, 2-day
+		return sprintf("%04d-%02d-%02d", $array[$key][0], $array[$key][1], $array[$key][2]);
 	}
 
 	public static function insNumber(array $array, $key)
