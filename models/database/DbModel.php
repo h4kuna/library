@@ -11,6 +11,13 @@ use Nette;
  */
 abstract class DbModel extends BaseModel implements IDbModel
 {
+	/**
+	 * rozsireni podminky
+	 */
+	private $value;
+	protected $columnCondition = 'CHANGE IT';
+	protected $conditionAccept = FALSE;
+
 	/** @var Nette\Database\Table\Selection */
 	private $db;
 
@@ -90,6 +97,9 @@ abstract class DbModel extends BaseModel implements IDbModel
 
 	public function insert(array $data, $lastId=FALSE)
 	{
+		if ($this->conditionAccept && !isset($data[$this->columnCondition])) {
+			$data[$this->columnCondition] = $this->getValue();
+		}
 		$this->prepareData($data);
 		try {
 			$res = $this->getDb()->insert($data);
@@ -186,6 +196,10 @@ abstract class DbModel extends BaseModel implements IDbModel
 		if ($page > 0) {
 			return $res->page($page, $itemsPerPage);
 		}
+
+		if ($this->conditionAccept) {
+			$res->where($this->columnCondition, $this->getValue());
+		}
 		return $res;
 	}
 
@@ -272,7 +286,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 	public function rollback($savePoint = FALSE)
 	{
 		if ($savePoint) {
-			$this->exec('ROLLBACK TO SAVEPOINT ' . $savePoint);
+			$this->conn->exec('ROLLBACK TO SAVEPOINT ' . $savePoint);
 		} elseif (self::$inTransaction) {
 			self::$inTransaction = FALSE;
 			$this->conn->rollback();
@@ -360,8 +374,39 @@ abstract class DbModel extends BaseModel implements IDbModel
 		if ($id === FALSE) {
 			return $this->getDb();
 		}
-		return $this->getDb()->where($by, $id);
+
+		$sql = $this->getDb()->where($by, $id);
+
+		if ($this->conditionAccept) {
+			$sql->where($this->columnCondition, $this->getValue());
+		}
+		return $sql;
 	}
+
+//-----------------
+	/**
+	 * rozšíření podmínek
+	 * @return type
+	 */
+	public function getValue()
+	{
+		if (!$this->value && $this->conditionAccept) {
+			$this->value = $this->getConditonValue();
+		}
+		return $this->value;
+	}
+
+	public function setValue($val)
+	{
+		$this->value = $val;
+		return $this;
+	}
+
+	protected function getConditonValue()
+	{
+		return NULL;
+	}
+//-----------------
 
 	/**
 	 * literal
