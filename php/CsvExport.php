@@ -1,52 +1,67 @@
 <?php
 
+namespace Utility;
+
+use Nette;
+
 /**
  * Description of CsvExport
  *
  * @author Hakuna
  */
-class CsvExport extends NObject
+class CsvExport extends Nette\Object
 {
-	private $callback;
-
-	/** @DibiResult */
-	private $result;
-
 	private $data;
-
 	private $delimiter = ';';
 
-	public function __construct(DibiResult $result, $callback=NULL)
+	public function setDelimiter($s)
 	{
-		$this->setCallback($callback);
-		$this->result = $result;
+		$this->delimiter = $s;
 	}
 
-	public function setCallback($val)
+	public function setData($data)
 	{
-		if($callback !== NULL && !is_callable($callback))
-		 throw new RuntimeException($callback .' is not callable.');
-		$this->callback = $callback;
-	}
-
-	public function export($path=NULL, $delimiter=';')
-	{
-		$this->delimiter = $delimiter;//@todo doupravit
-
-		$this->data = implode($this->delimiter, array_keys((array)$this->result->fetch())) ."\n";
-
-		if($this->callback !== NULL)
-		{
-			$this->data .= call_user_func_array($this->callback, array($this->result));
+		if (!is_array($data) && !($data instanceof \ArrayAccess)) {
+			dump($data);
+			throw new \RuntimeException('Data must be iteratorable.');
 		}
-		else
-		{
-			foreach($this->result as $val)
-			{
-				$this->data .= implode($this->delimiter, (array)$val) . "\n";
+		$this->data = $data;
+	}
+
+	public function toFile($path)
+	{
+		throw new Nette\NotImplementedException();
+	}
+
+	public function send($fileName)
+	{
+//		header('Content-type: text/csv');
+//		header('Content-disposition: attachment;filename=' . $fileName . '.csv');
+		echo $this->export();
+		exit;
+	}
+
+	protected function export()
+	{
+		$body = NULL;
+		foreach ($this->data as $val) {
+			if ($body === NULL) {
+				if (!is_array($val)) {
+					$val = $val->toArray();
+				}
+				$body .= $this->row(array_keys((array) $val));
 			}
+			$body .= $this->row($val);
 		}
-
-		file_put_contents(($path === NULL)? ('./'. time() .'.csv'): $path, str_replace('.', ',', $this->data));
+		return $body;
 	}
+
+	protected function row($data)
+	{
+		if(!is_array($data)) {
+			$data = $data->toArray();
+		}
+		return implode($this->delimiter, $data) . "\n";
+	}
+
 }
