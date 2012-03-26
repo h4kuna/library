@@ -29,3 +29,7 @@ ul.menu li{
 	display:inline;
 	margin-right: 5px;
 }
+
+.fLeft{
+	float: left;
+}
