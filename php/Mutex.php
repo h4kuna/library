@@ -58,7 +58,7 @@ class Mutex extends Nette\Object
 
 	private function open()
 	{
-		$this->file = fopen($this->temp . DIRECTORY_SEPARATOR . self::LOCK_FILE . $this->name, 'w');
+		$this->file = fopen($this->temp . DIRECTORY_SEPARATOR . $this->name, 'w');
 	}
 
 }
