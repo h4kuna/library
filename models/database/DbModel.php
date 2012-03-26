@@ -383,6 +383,15 @@ abstract class DbModel extends BaseModel implements IDbModel
 		return $sql;
 	}
 
+	protected function fetchArray(\Nette\Database\Table\Selection $sql)
+	{
+		$out = array();
+		foreach ($sql as $v) {
+			$out[] = $v->toArray();
+		}
+		return $out;
+	}
+
 //-----------------
 	/**
 	 * rozšíření podmínek
@@ -406,6 +415,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 	{
 		return NULL;
 	}
+
 //-----------------
 
 	/**
