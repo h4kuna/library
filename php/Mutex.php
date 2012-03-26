@@ -9,17 +9,26 @@ class Mutex extends Nette\Object
 	const LOCK_FILE = 'mutex';
 	private $file;
 
-	public function __construct($tempPath, $name = NULL)
+	/** @var string */
+	private $name;
+	private $temp;
+
+	public function __construct($tempPath = NULL, $name = self::LOCK_FILE)
 	{
-		$path = realpath($tempPath);
-		if (!$path) {
-			throw new Nette\FileNotFoundException($tempPath);
+		$this->setName($name);
+		if($tempPath) {
+			$this->setTemp($tempPath);
 		}
-		$this->file = fopen($path . DIRECTORY_SEPARATOR . self::LOCK_FILE . $name, 'w');
+	}
+
+	public function __destruct()
+	{
+		!$this->file || fclose($this->file);
 	}
 
 	public function lock()
 	{
+		$this->file || $this->open();
 		flock($this->file, LOCK_EX);
 	}
 
@@ -28,9 +37,28 @@ class Mutex extends Nette\Object
 		flock($this->file, LOCK_UN);
 	}
 
-	public function __destruct()
+	public function setName($v)
 	{
-		fclose($this->file);
+		$this->name = $v;
+		return $this;
+	}
+
+	public function setTemp($tempPath)
+	{
+		$path = realpath($tempPath);
+		if (!$path) {
+			throw new Nette\FileNotFoundException($tempPath);
+		}
+		$this->temp = $path . DIRECTORY_SEPARATOR . self::LOCK_FILE;
+		if (!file_exists($this->temp)) {
+			mkdir($this->temp);
+		}
+		return $this;
+	}
+
+	private function open()
+	{
+		$this->file = fopen($this->temp . DIRECTORY_SEPARATOR . self::LOCK_FILE . $this->name, 'w');
 	}
 
 }
