@@ -51,6 +51,7 @@ $(document).ready(function(){
 		$('.cursor').focus();
 	}
 
+	//mazani s potvrzenim
 	$('a[delete]').click(function(){
 		$this = $(this);
 		message = $this.attr('message');
@@ -65,5 +66,57 @@ $(document).ready(function(){
 
 		return false;
 	});
+
+	//placholder
+	jQuery.support.placeholder = false;
+	test = document.createElement('input');
+	if('placeholder' in test) {
+		jQuery.support.placeholder = true;
+	}
+
+	if(!$.support.placeholder) {
+		$('[placeholder]').focus(function () {
+			$this = $(this);
+			placeholder = $this.attr('placeholder');
+
+			if($this.attr('type') == 'text') {
+				if (placeholder != '' && $this.val() == placeholder) {
+					$this.val('').removeClass('hasPlaceholder');
+				}
+			}
+
+		}).blur(function () {
+			$this = $(this);
+			placeholder = $this.attr('placeholder');
+
+			switch($this.attr('type')) {
+				case 'password':
+					if(placeholder != '' && $this.val() == '')
+					{
+						$this.after( $('<input type="text">').val($this.attr('placeholder')).attr('_id', $this.attr('id')).bind('focus', function(){
+							$('#'+$(this).attr('_id')).css({'display': 'inline-block'}).focus();
+							$(this).remove();
+						})).css({
+							'display': 'none'
+						});
+					}
+					break;
+				default:
+					if (placeholder != '' && ($this.val() == '' || $this.val() == placeholder)) {
+						$this.val($this.attr('placeholder')).addClass('hasPlaceholder');
+					}
+					break;
+			}
+		}).blur();
+	}
+
+	//chrome autofill
+	if (navigator.userAgent.toLowerCase().indexOf("chrome") >= 0) {
+		$('input:-webkit-autofill').each(function(k, v){
+			$(v).css({
+				'background-color': 'transparent'
+			});
+		});
+	}
 
 })
