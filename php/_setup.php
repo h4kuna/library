@@ -35,3 +35,5 @@ function pd() {
 	if (!Debugger::$productionMode)
 		die();
 }
+
+require_once 'fce/array.php';
