@@ -5,6 +5,8 @@ use Nette\Image, Nette\Utils\Html, Models\Helpers;
 /**
  *
  * @author Milan Matějček
+ * @todo vyhodit napevno danne pismo
+ * @todo volitelná délka kódu
  */
 class System36 extends \Nette\Object{
 
@@ -22,7 +24,7 @@ class System36 extends \Nette\Object{
         $mod = 0;
         do{
             $mod = $num % 36;
-            $num = \intval($num / 36);
+            $num = intval($num / 36);
             $out .= ($mod > 9)? chr(self::TO_ASCII + $mod): (string)$mod;
         }while($num);
 
@@ -35,16 +37,16 @@ class System36 extends \Nette\Object{
      */
     public static function toDec($string)
     {
-        $string = \strrev(self::checkCode(($string)));
-        $len = \strlen($string);
+        $string = strrev(self::checkCode(($string)));
+        $len = strlen($string);
 
         $num = $out = 0;
         for($i=0; $i<$len; $i++)
         {
-            $num = !\is_numeric($string{$i}) ?
-                \ord($string{$i}) - self::TO_ASCII :
+            $num = !is_numeric($string{$i}) ?
+                ord($string{$i}) - self::TO_ASCII :
                 (int) $string{$i} ;
-            $out += $num * \pow(36, $i);
+            $out += $num * pow(36, $i);
         }
         return $out;
     }
@@ -61,11 +63,11 @@ class System36 extends \Nette\Object{
         $name = $code .'.png';
         $file = Helpers::getWebTemp() . $name;
 
-        if(!\file_exists($file))
+        if(!file_exists($file))
         {
             $img = Image::fromBlank(93, 28, Image::rgb(255, 255, 255));
             $img->ttftext(30, 0, 1, 28, Image::rgb(0, 0, 0),
-                    \APP_DIR . '/../tools/free3of9.ttf', $code);
+                    APP_DIR . '/../tools/free3of9.ttf', $code);
             $img->save($file);
         }
 
@@ -94,8 +96,8 @@ class System36 extends \Nette\Object{
 
     private static function checkCode($code)
     {
-        $code = \strtoupper($code);
-        if(!\preg_match('~^[0-9A-Z]{1,6}$~', $code))
+        $code = strtoupper($code);
+        if(!preg_match('~^[0-9A-Z]{1,6}$~', $code))
             throw new System36Exception ('The code is not valid, must be alphanumeric string.');
         return $code;
     }
