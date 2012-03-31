@@ -16,7 +16,7 @@ foreach ($p as $k => $v) {
 
 /**
  *
- *
+ * @todo universalnejsi strankovani po dnech, mesicich rocich, staci pretizit getSql
  * @property-read sql
  */
 class Period extends Nette\Object implements \Iterator
@@ -52,13 +52,16 @@ class Period extends Nette\Object implements \Iterator
 		$this->setActual($actual);
 	}
 
-	public function getSql($format = 'Y-m-d H:i:s')
+	public function getSql($position = 'monday this week')
 	{
-		$end = clone $this->end;
+		$format = 'Y-m-d H:i:s';
+		$start = clone $this->actual;
+		$start->modify($position);
+		$end = clone $start;
+		$end->add($this->interval);
 		$end->modify('-1 second');
-		return "BETWEEN '{$this->start->format($format)}' AND '{$end->format($format)}'";
+		return "BETWEEN '{$start->format($format)}' AND '{$end->format($format)}'";
 	}
-
 	public function setActual($date)
 	{
 		if ($date instanceof \DateTime) {
