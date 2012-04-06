@@ -15,6 +15,37 @@ function confirmDelete(delUrl, message) {
 }
 
 /**
+ * @var input checkbox|radio
+ */
+function graphicInput(input) {
+	var img = '<img src="../images/form/'+ input +'_XX.png" />';
+	var isRadio = input == 'radio';
+	$('input[type='+ input +']').each(function(k, v){
+		var $input = $(v);
+		$input.bind('init change', function(event){
+			if(event.isTrigger) {
+				$input.hide();
+			}
+			else {
+				if(isRadio && event.type != 'init') {
+					var id = $input.attr('id');
+					$('input[name=' + $input.attr('name') + '][id!='+ id +']', $input.parents('form')).each(function(k, v) {
+						$v = $(v);
+						$v.next().remove();
+						$v.trigger('init');
+					});
+				}
+				$input.next().remove();
+			}
+			$button = $(img.replace('XX', !!$input.attr('checked') + 0)).click(function(){
+				$input.click();
+			});
+			$input.after($button);
+		}).trigger('init');
+	});
+}
+
+/**
  * funkce zobrazi a schova flash message
  */
 function flashMessage ()
@@ -48,7 +79,7 @@ $(document).ready(function(){
 
 	//vlozeni kurzoru
 	if(!$(':focus').length) {
-		$('.cursor').focus();
+		$('.cursor:eq(0)').focus();
 	}
 
 	//mazani s potvrzenim
