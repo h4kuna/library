@@ -36,4 +36,4 @@ function pd() {
 		die();
 }
 
-require_once 'fce/array.php';
+require_once 'betterPhp/array.php';
