@@ -383,11 +383,14 @@ abstract class DbModel extends BaseModel implements IDbModel
 		return $sql;
 	}
 
-	protected function fetchArray(\Nette\Database\Table\Selection $sql)
+	protected function fetchArray(\Nette\Database\Table\Selection $sql, $key = NULL)
 	{
 		$out = array();
+		$c = 0;
 		foreach ($sql as $v) {
-			$out[] = $v->toArray();
+			$k = $key === NULL? $c: $v->{$key};
+			$out[$k] = $v->toArray();
+			++$c;
 		}
 		return $out;
 	}
