@@ -1,42 +1,43 @@
 /*-----------------flashMessage----------------------------*/
 div#flash {
-	color: black;
-	background: white;
-	border: 1px solid black;
 	z-index: 20;
+	position: fixed;
+	left: 20%;
+	right: 20%;
+	top: 6%;
+	height: auto;
+	color: white;
 }
 
-div#flash a#close{
+div#flash a{
 	float: right;
 	cursor: pointer;
-	font-weight: bolder;
-	padding: 2px;
-	background-color: white;
 	text-decoration: none;
-	color: black;
-	z-index: 22;
+	z-index: 25;
+	position: absolute;
+	top: 8%;
+	right: 3%;
 }
 
 div.warning, div.info, div.error{
-	border: 1px solid black;
-	margin: 1%;
-	padding: 1%;
+	filter: alpha(opacity=95);
+	-moz-opacity: 0.95;
+	-khtml-opacity: 0.95;
+	opacity: 0.95;
 	z-index: 21;
 	font-weight: bold;
-	font-size: 116%;
+	font-size: 180%;
+	padding: 2%;
 }
 
 div.warning{
-	background: #FFF9D7;
-	border-color: #E2C822;
+	background: #f2b82a;
 }
 
 div.info{
-	background: #8FFF9E;
-	border-color: #4AEF60;
+	background: #569222;
 }
 
 div.error{
-	background: #FF5F5F;
-	border-color: #EF4A51;
+	background: #b7000a;
 }

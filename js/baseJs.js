@@ -17,8 +17,8 @@ function confirmDelete(delUrl, message) {
 /**
  * @var input checkbox|radio
  */
-function graphicInput(input) {
-	var img = '<img src="../images/form/'+ input +'_XX.png" />';
+function graphicInput(input, path) {
+	var img = '<img src="' + path + input +'_0.png" />';
 	var isRadio = input == 'radio';
 	$('input[type='+ input +']').each(function(k, v){
 		var $input = $(v);
@@ -37,7 +37,7 @@ function graphicInput(input) {
 				}
 				$input.next().remove();
 			}
-			$button = $(img.replace('XX', !!$input.attr('checked') + 0)).click(function(){
+			$button = $(img.replace('0', !!$input.attr('checked') + 0)).click(function(){
 				$input.click();
 			});
 			$input.after($button);
@@ -52,21 +52,12 @@ function flashMessage ()
 {
 	var flash = $('#flash');
 
-	flash.css({
-		'position': 'fixed',
-		'left': '20%',
-		'right': '20%',
-		'top': '6%',
-		'height': 'auto'
-	}).animate({
-		opacity: 0.9
-	});
-
-	$('a#close').attr('href', '#').click(function() {
+	$('a', flash).attr('href', '#').click(function() {
 		flash.stop().fadeOut('fast');
+		return false;
 	});
 
-	flash.delay(10000).fadeOut('slow');
+	flash.delay(20000).fadeOut('slow');
 }
 
 
