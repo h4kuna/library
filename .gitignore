@@ -1,2 +1,3 @@
-/3rdParty/php/Zend/*
+/3rdParty/php/Zend/
+/3rdParty/php/MPDF/
 /nbproject
