@@ -43,6 +43,7 @@ abstract class BaseModel extends Object
 		$this->session->setExpiration($expiretion);
 	}
 
+	/** @return \Nette\Security\User */
 	public function getUser()
 	{
 		return $this->container->user;
