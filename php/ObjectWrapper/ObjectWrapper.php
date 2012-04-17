@@ -18,7 +18,7 @@ abstract class ObjectWrapper extends Nette\Object
 	{
 		$fname = $this->prefix . $name;
 		if (function_exists($fname)) {
-			return call_user_func_array($fname, array_unshift($args, $this->resource));
+			return call_user_func_array($fname, array_merge(array($this->resource), $args));
 		}
 		throw new \RuntimeException('Call undefined method ' . __CLASS__ . '::' . $name);
 	}
