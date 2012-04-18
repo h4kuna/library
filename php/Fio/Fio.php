@@ -14,9 +14,9 @@ class Fio extends Nette\Object
 
 	public function __construct($account, $password, $userName)
 	{
-		$this->account = $account;
-		$this->password = $password;
-		$this->userName = $userName;
+		$this->account = urlencode($account);
+		$this->password = urlencode($password);
+		$this->userName = urlencode($userName);
 	}
 
 	public function setFilter($v)
