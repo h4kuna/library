@@ -167,7 +167,8 @@ class Validators extends \Utility\NonObject
 		$localPart = "(?:\"(?:[ !\\x23-\\x5B\\x5D-\\x7E]*|\\\\[ -~])+\"|$atom+(?:\\.$atom+)*)"; // quoted or unquoted
 		$chars = "a-z0-9\x80-\xFF"; // superset of IDN
 		$domain = "[$chars](?:[-$chars]{0,61}[$chars])"; // RFC 1034 one domain component
-		if (preg_match("(^$localPart@(?:$domain?\\.)+[-$chars]{2,19}\\z)i", $array[$key])) {
+		list(, $host) = explode('@', $array[$key]);
+		if (preg_match("(^$localPart@(?:$domain?\\.)+[-$chars]{2,19}\\z)i", $array[$key]) && checkdnsrr($host, 'MX') ) {
 			return $array[$key];
 		}
 		throw new \Nette\InvalidStateException('Non valid email.', 2);
