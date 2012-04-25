@@ -9,14 +9,12 @@ use Nette\Caching\Cache,
 /**
  * @property-read $models
  * @property-read Nette\Caching\Cache $cache
+ * @property-read Nette\Http\SessionSection
  */
 abstract class BaseModel extends Object
 {
 	/** @var Container */
 	protected $container;
-
-	/** @var Nette\Http\SessionSection */
-	protected $session;
 
 	const EXPIRE = Cache::EXPIRATION;
 
@@ -25,22 +23,14 @@ abstract class BaseModel extends Object
 		$this->container = $container;
 	}
 
-	/**
-	 * @param string $namespace
-	 * @return Nette\Caching\Cache
-	 */
-	public function cache($namespace)
-	{
-		return $this->container->cacheLoader->getLoader($namespace);
-	}
-
-	protected function setSession($namespace = NULL, $expiretion='+14 days')
+	public function getSession($expiretion='+14 days', $namespace = NULL)
 	{
 		if ($namespace === NULL) {
 			$namespace = get_class($this);
 		}
-		$this->session = $this->container->session->getSection($namespace);
-		$this->session->setExpiration($expiretion);
+		$session = $this->container->session->getSection($namespace);
+		$session->setExpiration($expiretion);
+		return $session;
 	}
 
 	/** @return \Nette\Security\User */
@@ -49,6 +39,7 @@ abstract class BaseModel extends Object
 		return $this->container->user;
 	}
 
+	/** @return BaseModel */
 	public function getModels()
 	{
 		return $this->container->models;
@@ -59,7 +50,7 @@ abstract class BaseModel extends Object
 		if (!$namespace) {
 			$namespace = get_class($this);
 		}
-		return $this->cache($namespace);
+		return $this->container->cacheLoader->getLoader($namespace);
 	}
 
 	public function __toString()
@@ -70,7 +61,7 @@ abstract class BaseModel extends Object
 	/**  @return \Nette\Security\Identity */
 	public function getIdentity()
 	{
-		return $this->container->getByType('Nette\Security\User')->getIdentity();
+		return $this->getUser()->getIdentity();
 	}
 
 }

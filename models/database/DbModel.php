@@ -130,15 +130,12 @@ abstract class DbModel extends BaseModel implements IDbModel
 				$found = ($found[1][1] == 'PRIMARY') ? $this->primary : $found[1][1];
 			}
 			//je to danne do pole aby bylo pozna ze nebyl zaznam vlozen/upraven
-			if (isset($data[$found])) {
-				$id = $data[$found];
-			} else {
-				$m = 'fetchBy' . ucfirst($found);
-				$id = $this->{$m}($data[$found], $this->primary)->{$this->primary};
-			}
-			$id = array('duplicity' => $id,
+			$m = 'fetchBy' . ucfirst($found);
+			$data = $this->{$m}($data[$found]);
+			$id = array('duplicity' => $data->{$found},
+
 					'column' => $found,
-					'all' => array($found => $id));
+					'all' => $data->toArray());
 		}
 
 		return ($lastId) ? $id : $res;
@@ -361,7 +358,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 				} elseif (substr($str, 0, 1) == ':') {
 					$f = '\Models\Validators:' . $f;
 				} elseif ($str == '->') {
-					$f = callback($this, $f);
+					$f = callback($this, substr($f, 2));
 				}
 
 				$data[$column] = call_user_func_array($f, array($data, $column, $args));
@@ -371,11 +368,14 @@ abstract class DbModel extends BaseModel implements IDbModel
 
 	protected function getCondition($by, $id)
 	{
+		$sql = $this->getDb();
 		if ($id === FALSE) {
-			return $this->getDb();
+			return $sql;
 		}
 
-		$sql = $this->getDb()->where($by, $id);
+		if($id !== 0) {
+			$sql->where($by, $id);
+		}
 
 		if ($this->conditionAccept) {
 			$sql->where($this->columnCondition, $this->getValue());

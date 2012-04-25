@@ -197,4 +197,13 @@ class Validators extends \Utility\NonObject
 		return $array[$key];
 	}
 
+	public static function onlyNumeric(array $array, $key)
+	{
+		return preg_replace('~[^0-9]~', '', $array[$key]);
+	}
+
+	public static function onlyAlphaNumeric(array $array, $key)
+	{
+		return preg_replace('~[^A-Z0-9]~i', '', $array[$key]);
+	}
 }
