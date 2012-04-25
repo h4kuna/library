@@ -124,15 +124,14 @@ abstract class DbModel extends BaseModel implements IDbModel
 				}
 				$found = array_search($found[1], $data);
 			} else {
-				if (!preg_match_all('~\'(.*)\'~U', $e->getMessage(), $found)) {
+				if (!preg_match('~Duplicate entry \'(.+)\' for key \'(.+)\'$~U', $e->getMessage(), $found)) {
 					throw $e;
 				}
-				$found = ($found[1][1] == 'PRIMARY') ? $this->primary : $found[1][1];
+				$found = ($found[2] == 'PRIMARY') ? $this->primary : $found[2];
 			}
 			//je to danne do pole aby bylo pozna ze nebyl zaznam vlozen/upraven
 			$data = $this->fetch($data[$found], '*', $found);
 			$id = array('duplicity' => $data->{$found},
-
 					'column' => $found,
 					'all' => $data->toArray());
 		}
