@@ -8,23 +8,30 @@ class Feast extends NonObject
 	const CZECH_DATE_ZERO_SHORT = 'd.m.y';
 
 	/**
-	 * vrati nazev dne v cestine
+	 * vrati nazev dne v cestine, prijímá -1 až 7 + datum ve formatu YYYY-MM-DD
 	 * @return string
 	 */
 	static public function nameOfDay($day = NULL)
 	{
-		if ($day === NULL) {
-			$day = (int) date('w');
+		static $days = array(1 => 'Pondělí', 2 => 'Úterý', 3 => 'Středa', 4 => 'Čtvrtek', 5 => 'Pátek', 6 => 'Sobota', 0 => 'Neděle');
+
+		if ($day < 0) {
+			return $days;
 		}
 
-		static $days = array('Neděle', 'Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota');
+		if ($day === NULL) {
+			$day = (int) date('w');
+		} elseif (is_numeric($day) && $day < 8) {
+			if ($day == 7) {
+				$day = 0;
+			}
+		} else {
+			$dt = new \DateTime($day);
+			$day = $dt->format('w');
+		}
 
 		if (isset($days[$day])) {
 			return $days[$day];
-		}
-
-		if ($day < 0) {
-			return 0;
 		}
 
 		throw new \Exception('Invalid number for day, interval is 0-6, 0 = Sunday');
@@ -32,19 +39,19 @@ class Feast extends NonObject
 
 	static public function nameOfMonth($month = NULL)
 	{
+		static $days = array(1 => 'Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen',
+ 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec');
+
+		if ($day < 1) {
+			return $days;
+		}
+
 		if ($day === NULL) {
 			$day = (int) date('n');
 		}
 
-		static $days = array(1 => 'Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen',
-				'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec');
-
 		if (isset($days[$day])) {
 			return $days[$day];
-		}
-
-		if ($day < 1) {
-			return 0;
 		}
 
 		throw new \Exception('Invalid number for day, interval is 1-12.');
