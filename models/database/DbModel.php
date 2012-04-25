@@ -130,8 +130,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 				$found = ($found[1][1] == 'PRIMARY') ? $this->primary : $found[1][1];
 			}
 			//je to danne do pole aby bylo pozna ze nebyl zaznam vlozen/upraven
-			$m = 'fetchBy' . ucfirst($found);
-			$data = $this->{$m}($data[$found]);
+			$data = $this->fetch($data[$found], '*', $found);
 			$id = array('duplicity' => $data->{$found},
 
 					'column' => $found,
