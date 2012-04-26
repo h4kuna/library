@@ -49,7 +49,7 @@ class Validators extends \Utility\NonObject
 
 	public static function float(array $array, $key)
 	{
-		return floatval(str_replace(array(','), array('.'), $array[$key]));
+		return floatval(str_replace(array(',', ' '), array('.', ''), $array[$key]));
 	}
 
 	public static function fNull(array $array, $key)
@@ -60,7 +60,7 @@ class Validators extends \Utility\NonObject
 
 	public static function int(array $array, $key)
 	{
-		return intval($array[$key]);
+		return intval(self::float($array, $key));
 	}
 
 	public static function iNull(array $array, $key)

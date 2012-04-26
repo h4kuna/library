@@ -26,7 +26,7 @@ class GpcParser extends \Nette\Object implements \Iterator
 			$this->data = new \SplFileObject($source);
 			$this->data->setFlags(6); //bug konstanta \SplFileObject::SKIP_EMPTY vraci 4 uz to bylo reportovane
 		} else {
-			$this->data = new PlainText($source);
+			$this->data = new \Utility\TextIterator($source);
 		}
 	}
 
@@ -158,16 +158,6 @@ class GpcParser extends \Nette\Object implements \Iterator
 	private function ltrim($s)
 	{
 		return ltrim($s, '0');
-	}
-
-}
-
-class PlainText extends \ArrayIterator
-{
-
-	public function __construct($text)
-	{
-		parent::__construct(is_array($text) ? $text : explode("\n", trim($text)));
 	}
 
 }
