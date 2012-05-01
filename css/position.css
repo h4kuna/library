@@ -1,6 +1,7 @@
 div.clear{
 	visibility: hidden;
 	clear: both;
+	float: none;
 }
 
 .hidden, .hiddenOut{

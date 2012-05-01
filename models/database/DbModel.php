@@ -188,13 +188,12 @@ abstract class DbModel extends BaseModel implements IDbModel
 			$sqlCalc = 'SQL_CALC_FOUND_ROWS ';
 		}
 		$res = $this->getDb()->select($sqlCalc . $columns);
-		if ($page > 0) {
-			return $res->page($page, $itemsPerPage);
-		}
+		$this->getCondition(0, 0, $res);
 
-		if ($this->conditionAccept) {
-			$res->where($this->columnCondition, $this->getValue());
+		if ($page > 0) {
+			$res->page($page, $itemsPerPage);
 		}
+		
 		return $res;
 	}
 
@@ -364,9 +363,12 @@ abstract class DbModel extends BaseModel implements IDbModel
 		}
 	}
 
-	protected function getCondition($by, $id)
+	protected function getCondition($by, $id, $sql = NULL)
 	{
-		$sql = $this->getDb();
+		if ($sql === NULL) {
+			$sql = $this->getDb();
+		}
+
 		if ($id === FALSE) {
 			return $sql;
 		}
@@ -415,6 +417,11 @@ abstract class DbModel extends BaseModel implements IDbModel
 	protected function getConditonValue()
 	{
 		return NULL;
+	}
+
+	protected function getSqlCondition($prefix = NULL)
+	{
+		return $this->columnCondition . " = '" . $this->getValue() . "'";
 	}
 
 //-----------------
