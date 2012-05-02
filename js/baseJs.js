@@ -65,9 +65,6 @@ function flashMessage ()
  * funkce spouštěné po načtení prohlížeče
  */
 $(document).ready(function(){
-	//zpravicky
-	flashMessage();
-
 	//vlozeni kurzoru
 	if(!$(':focus').length) {
 		$('.cursor:eq(0)').focus();
