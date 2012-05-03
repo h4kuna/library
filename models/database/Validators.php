@@ -9,6 +9,7 @@ use Nette\Utils\Strings;
  */
 class Validators extends \Utility\NonObject
 {
+	const DATE_ZERO = '0000-00-00 00:00:00';
 
 	public static function webalize(array $array, $key)
 	{
@@ -44,6 +45,9 @@ class Validators extends \Utility\NonObject
 
 	public static function sNull(array $array, $key)
 	{
+		if ($array[$key] == self::DATE_ZERO) {
+			return NULL;
+		}
 		return empty($array[$key]) ? NULL : $array[$key];
 	}
 
@@ -138,14 +142,18 @@ class Validators extends \Utility\NonObject
 
 	public static function implodeBirtday(array $array, $key)
 	{
+		if (empty($array[$key]) || !trim(implode($array[$key]))) {
+			return self::DATE_ZERO;
+		}
+
 		if (!is_array($array[$key])) {
-			$date  = $array[$key];
+			$date = $array[$key];
 			$point = strstr($date, '.');
 			if ($point === FALSE && strstr($date, '-') === FALSE) {
 				return NULL;
 			}
 
-			return ($point)? \Utility\Feast::czechDate2Sql($date): $date;
+			return ($point) ? \Utility\Feast::czechDate2Sql($date) : $date;
 		}
 
 		if (isset($array[$key]['year'])) {
