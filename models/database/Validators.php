@@ -139,11 +139,13 @@ class Validators extends \Utility\NonObject
 	public static function implodeBirtday(array $array, $key)
 	{
 		if (!is_array($array[$key])) {
-			return $array[$key];
-		}
+			$date  = $array[$key];
+			$point = strstr($date, '.');
+			if ($point === FALSE && strstr($date, '-') === FALSE) {
+				return NULL;
+			}
 
-		if (strlen(implode($array[$key])) < 8) {
-			return NULL;
+			return ($point)? \Utility\Feast::czechDate2Sql($date): $date;
 		}
 
 		if (isset($array[$key]['year'])) {
@@ -168,7 +170,7 @@ class Validators extends \Utility\NonObject
 		$chars = "a-z0-9\x80-\xFF"; // superset of IDN
 		$domain = "[$chars](?:[-$chars]{0,61}[$chars])"; // RFC 1034 one domain component
 		list(, $host) = explode('@', $array[$key]);
-		if (preg_match("(^$localPart@(?:$domain?\\.)+[-$chars]{2,19}\\z)i", $array[$key]) && checkdnsrr($host, 'MX') ) {
+		if (preg_match("(^$localPart@(?:$domain?\\.)+[-$chars]{2,19}\\z)i", $array[$key]) && checkdnsrr($host, 'MX')) {
 			return $array[$key];
 		}
 		throw new \Nette\InvalidStateException('Non valid email.', 2);
@@ -207,4 +209,5 @@ class Validators extends \Utility\NonObject
 	{
 		return preg_replace('~[^A-Z0-9]~i', '', $array[$key]);
 	}
+
 }

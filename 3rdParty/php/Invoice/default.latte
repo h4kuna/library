@@ -58,7 +58,7 @@
         font-size: 12px;
 			}
 		</style>
-		<div>
+		<div {if $storno && $pdf}style="background: transparent url('{!$storno}') no-repeat 50% 50%; "{/if}>
 			<div style="text-align: right; border-bottom: 2px solid #000000; color: #1A5DAC; font-weight: bold; font-size: 20px;">{$title} - {$id}</div>
 
 			<table>
@@ -207,6 +207,7 @@
         <div style="font-weight: bold;">Vystavil, razítko, podpis:</div>
         <img src="http://www.profitux.cz/images/podpis_maly.jpg" alt="Vystavil, razítko, podpis:" />
     </div> *}
+			{if $storno && !$pdf}<img style="position: fixed; top: 200px; left: 35%;" src="{!$storno}">{/if}
 		</div>
 	</body>
 </html>
