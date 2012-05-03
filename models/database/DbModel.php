@@ -181,7 +181,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 		return $this->find($id, $columns, $by)->fetch();
 	}
 
-	public function findAll($columns='*', $page=NULL, $itemsPerPage=50)
+	public function findAll($columns='*', $page=NULL, $itemsPerPage=self::ITEM_PER_PAGE)
 	{
 		$sqlCalc = NULL;
 		if ($this->sqlCalc) {
@@ -193,7 +193,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 		if ($page > 0) {
 			$res->page($page, $itemsPerPage);
 		}
-		
+
 		return $res;
 	}
 

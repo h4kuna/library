@@ -16,6 +16,8 @@ abstract class BaseModel extends Object
 	/** @var Container */
 	protected $container;
 
+	const ITEM_PER_PAGE = 50;
+
 	const EXPIRE = Cache::EXPIRATION;
 
 	public function __construct(Container $container)
