@@ -142,7 +142,7 @@ class Validators extends \Utility\NonObject
 
 	public static function implodeBirtday(array $array, $key)
 	{
-		if (empty($array[$key]) || !trim(implode($array[$key]))) {
+		if (empty($array[$key]) || (is_array($array[$key]) && !trim(implode($array[$key])))) {
 			return self::DATE_ZERO;
 		}
 
