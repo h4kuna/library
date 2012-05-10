@@ -26,7 +26,7 @@ function flashMessage ()
 		return false;
 	});
 
-	flash.delay(20000).fadeOut('slow');
+	flash.delay(15000).fadeOut('slow');
 }
 
 
