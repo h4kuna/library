@@ -85,7 +85,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 		return array_intersect_key($data, $this->mapper);
 	}
 
-	public function update(array $data, $id, $by=NULL)
+	public function update(array $data, $id, $by = NULL)
 	{
 		if ($by == FALSE) {
 			$by = $this->primary;
@@ -95,7 +95,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 		return $this->getCondition($by, $id)->update($data);
 	}
 
-	public function insert(array $data, $lastId=FALSE)
+	public function insert(array $data, $lastId = FALSE)
 	{
 		if ($this->conditionAccept && !isset($data[$this->columnCondition])) {
 			$data[$this->columnCondition] = $this->getValue();
@@ -139,7 +139,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 		return ($lastId) ? $id : $res;
 	}
 
-	public function delete($id, $column=NULL, $by=NULL)
+	public function delete($id, $column = NULL, $by = NULL)
 	{
 		$out = NULL;
 		if ($column && $id) {
@@ -164,7 +164,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 		}
 	}
 
-	public function find($id, $columns='*', $by=NULL)
+	public function find($id, $columns = '*', $by = NULL)
 	{
 		if (!$by) {
 			$by = $this->primary;
@@ -176,12 +176,12 @@ abstract class DbModel extends BaseModel implements IDbModel
 		return $this->findAll($columns)->where($by, $id);
 	}
 
-	public function fetch($id, $columns='*', $by=NULL)
+	public function fetch($id, $columns = '*', $by = NULL)
 	{
 		return $this->find($id, $columns, $by)->fetch();
 	}
 
-	public function findAll($columns='*', $page=NULL, $itemsPerPage=self::ITEM_PER_PAGE)
+	public function findAll($columns = '*', $page = NULL, $itemsPerPage = self::ITEM_PER_PAGE)
 	{
 		$sqlCalc = NULL;
 		if ($this->sqlCalc) {
@@ -373,7 +373,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 			return $sql;
 		}
 
-		if($id !== 0) {
+		if ($id !== 0) {
 			$sql->where($by, $id);
 		}
 
@@ -383,12 +383,22 @@ abstract class DbModel extends BaseModel implements IDbModel
 		return $sql;
 	}
 
+	public function offCondition()
+	{
+		$this->conditionAccept = FALSE;
+	}
+
+	public function onCondition()
+	{
+		$this->conditionAccept = TRUE;
+	}
+
 	protected function fetchArray(\Nette\Database\Table\Selection $sql, $key = NULL)
 	{
 		$out = array();
 		$c = 0;
 		foreach ($sql as $v) {
-			$k = $key === NULL? $c: $v->{$key};
+			$k = $key === NULL ? $c : $v->{$key};
 			$out[$k] = $v->toArray();
 			++$c;
 		}
@@ -431,7 +441,7 @@ abstract class DbModel extends BaseModel implements IDbModel
 	 * @param type $v
 	 * @return \Nette\Database\SqlLiteral
 	 */
-	protected function l($v)
+	public function l($v)
 	{
 		return new \Nette\Database\SqlLiteral($v);
 	}
