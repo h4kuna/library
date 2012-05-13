@@ -6,17 +6,16 @@ use Nette;
 
 /*
  * @example
-$p = new \Utility\Period(new \Utility\DateTime('monday previous week'), new \Utility\DateTime('monday +3 week'));
-$p->setFrom(new \DateTime('2012-04-02'), 2);
-foreach ($p as $k => $v) {
-	p($k, $v, $p->currentWeek());
-}
+  $p = new \Utility\Period(new \Utility\DateTime('monday previous week'), new \Utility\DateTime('monday +3 week'));
+  $p->setFrom(new \DateTime('2012-04-02'), 2);
+  foreach ($p as $k => $v) {
+  p($k, $v, $p->currentWeek());
+  }
  */
-
 
 /**
  *
- * @todo universalnejsi strankovani po dnech, mesicich rocich, staci pretizit getSql
+ *
  * @property-read sql
  */
 class Period extends Nette\Object implements \Iterator
@@ -62,6 +61,7 @@ class Period extends Nette\Object implements \Iterator
 		$end->modify('-1 second');
 		return "BETWEEN '{$start->format($format)}' AND '{$end->format($format)}'";
 	}
+
 	public function setActual($date)
 	{
 		if ($date instanceof \DateTime) {
@@ -69,6 +69,11 @@ class Period extends Nette\Object implements \Iterator
 		} else {
 			$this->actual = new \DateTime($date);
 		}
+		return $this->actual;
+	}
+
+	public function getActual()
+	{
 		return $this->actual;
 	}
 
@@ -131,13 +136,13 @@ class Period extends Nette\Object implements \Iterator
 	public function next()
 	{
 		++$this->key;
-		$this->pointer->add($this->interval);
+		$this->getPointer()->add($this->interval);
 	}
 
 	public function rewind()
 	{
 		$this->key = 0;
-		$this->pointer = $this->getFrom();
+		$this->setPointer(TRUE);
 	}
 
 	public function key()
@@ -148,6 +153,29 @@ class Period extends Nette\Object implements \Iterator
 	public function valid()
 	{
 		return $this->pointer < $this->end;
+	}
+
+	/**
+	 *
+	 * @param bool $hard
+	 * @return \DateTime
+	 */
+	private function setPointer($hard = FALSE)
+	{
+		if ($this->pointer && !$hard) {
+			return $this->pointer;
+		}
+		$this->pointer = $this->getFrom();
+		return $this;
+	}
+
+	public function getPointer()
+	{
+		if ($this->pointer) {
+			return $this->pointer;
+		}
+		$this->setPointer();
+		return $this->pointer;
 	}
 
 }
