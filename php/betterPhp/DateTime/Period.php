@@ -67,7 +67,7 @@ class Period extends Nette\Object implements \Iterator
 		if ($date instanceof \DateTime) {
 			$this->actual = $date;
 		} else {
-			$this->actual = new \DateTime($date);
+			$this->actual = new \Utility\DateTime($date);
 		}
 		return $this->actual;
 	}

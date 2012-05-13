@@ -12,7 +12,6 @@ class DateTime extends Nette\DateTime
 	const CZECH_DATE_ZERO = 'd.m.Y';
 
 	protected $outFormat = self::SQL_DATE;
-	private $fix = FALSE;
 
 	public function __construct($time = 'now', $object = NULL)
 	{
@@ -33,16 +32,8 @@ class DateTime extends Nette\DateTime
 		return $this->format($this->outFormat);
 	}
 
-	public function modify($modify)
-	{
-		return parent::modify($this->fixRelativeMove($modify));
-	}
-
 	private function fixRelativeMove($time)
 	{
-		if ($this->fix) {
-			return $time;
-		}
 		$time = strtolower($time);
 		if (strstr($time, 'week') !== FALSE && !date('w')) {
 			$found = array();
@@ -51,7 +42,6 @@ class DateTime extends Nette\DateTime
 			static $change = array('previous' => '-2', 'this' => 'previous', 'next' => 'this');
 			if (!is_numeric($found[1]) && isset($change[$found[1]])) {
 				$time = str_replace($found[1] . $x, $change[$found[1]] . $x, $time);
-				$this->fix = TRUE;
 			}
 		}
 		return $time;
