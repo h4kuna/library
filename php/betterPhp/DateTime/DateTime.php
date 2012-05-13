@@ -18,8 +18,11 @@ class DateTime extends Nette\DateTime
 		if (!$object && \PHP_VERSION_ID == 50303) {
 			$object = new \DateTimeZone(ini_get('date.timezone'));
 		}
+		parent::__construct($time, $object);
 
-		parent::__construct($this->fixRelativeMove($time), $object);
+		if ($this->isRelative($time) && !date('w')) {
+			parent::modify('-1 week');
+		}
 	}
 
 	public function setOutFormat($val)
@@ -32,19 +35,33 @@ class DateTime extends Nette\DateTime
 		return $this->format($this->outFormat);
 	}
 
-	private function fixRelativeMove($time)
+	public function modify($modify)
+	{
+		if ($this->isRelative($modify) && $this->isSunday()) {
+			parent::modify('-1 week');
+		}
+		$res = parent::modify($modify);
+		return $res;
+	}
+
+	private function isRelative($time)
 	{
 		$time = strtolower($time);
-		if (strstr($time, 'week') !== FALSE && !date('w')) {
+		if (strstr($time, 'week')) {
 			$found = array();
 			$x = ' week';
 			preg_match('~(\w*)' . $x . '~U', $time, $found);
 			static $change = array('previous' => '-2', 'this' => 'previous', 'next' => 'this');
 			if (!is_numeric($found[1]) && isset($change[$found[1]])) {
-				$time = str_replace($found[1] . $x, $change[$found[1]] . $x, $time);
+				return TRUE;
 			}
 		}
-		return $time;
+		return FALSE;
+	}
+
+	private function isSunday()
+	{
+		return !$this->format('w');
 	}
 
 }
