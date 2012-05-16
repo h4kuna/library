@@ -16,7 +16,7 @@ class FileTools extends Nette\Object
 	 * @access public
 	 * @return success
 	 */
-	public static function cleanDirRecursive($path, $delRoot=TRUE)
+	public static function cleanDirRecursive($path, $delRoot = TRUE)
 	{
 		foreach (\Nette\Utils\Finder::find('*')->in($path) as $item) {
 			$p = $item->getPathname();
@@ -41,7 +41,7 @@ class FileTools extends Nette\Object
 	 * jinak lze nastavi retezcem co se ma z konce $path odstranit
 	 * @return string|FALSE
 	 */
-	static public function lastSlash($path, $addSlash=TRUE, $existControl=TRUE, $realPath=TRUE)
+	static public function lastSlash($path, $addSlash = TRUE, $existControl = TRUE, $realPath = TRUE)
 	{
 		if ($existControl === TRUE) {
 			if (!is_dir($path))
@@ -103,7 +103,7 @@ class FileTools extends Nette\Object
 	 * @param $point    -pridani moznych znaku jako .
 	 * @return string
 	 */
-	static public function fileType(&$fileName, $cut=TRUE, $point='.')
+	static public function fileType(&$fileName, $cut = TRUE, $point = '.')
 	{
 		$nameArray = explode('.', strtolower($fileName));
 
@@ -140,7 +140,7 @@ class FileTools extends Nette\Object
 	 * @param $delete
 	 * @return void
 	 */
-	static public function deleteFiles($path='./', $search='~.~', $delete=FALSE)
+	static public function deleteFiles($path = './', $search = '~.~', $delete = FALSE)
 	{
 		$dirObj = new DirectoryIterator($path);
 		if ($dirObj !== FALSE) {
@@ -161,6 +161,44 @@ class FileTools extends Nette\Object
 		} else {
 			return FALSE;
 		}
+	}
+
+	/**
+	 *
+	 * @param path $filePath
+	 * @param bool $isFile
+	 * @return bool
+	 */
+	public static function mkDir($filePath)
+	{
+		if (is_file($filePath)) {
+			$filePath = dirname($filePath);
+		}
+		if (file_exists($filePath)) {
+			return TRUE;
+		}
+		self::mkDir(dirname($filePath));
+		mkdir($filePath, 0777);
+	}
+
+	/**
+	 *
+	 * @param \Nette\Http\FileUpload $file
+	 * @param string $path
+	 * @return TRUE
+	 */
+	public static function save(\Nette\Http\FileUpload $file, $path)
+	{
+		self::mkDir($path);
+		$path = realpath($path) . DIRECTORY_SEPARATOR;
+		$name = $file->sanitizedName;
+		do {
+			$pathName = $path . $name;
+			$name = \Nette\Utils\Strings::random(5) . $name;
+		} while (file_exists($pathName));
+
+		$file->move($pathName);
+		return basename($pathName);
 	}
 
 }
