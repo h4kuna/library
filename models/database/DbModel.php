@@ -114,7 +114,6 @@ abstract class DbModel extends BaseModel implements IDbModel
 			if ($e->getCode() != 23000 || $lastId != TRUE) {
 				throw $e;
 			}
-
 			$v = $this->getVersion();
 			$found = array();
 
@@ -130,6 +129,10 @@ abstract class DbModel extends BaseModel implements IDbModel
 				$found = ($found[2] == 'PRIMARY') ? $this->primary : $found[2];
 			}
 			//je to danne do pole aby bylo pozna ze nebyl zaznam vlozen/upraven
+			if (!isset($data[$found])) {
+				return $data;
+			}
+
 			$data = $this->fetch($data[$found], '*', $found);
 			$id = array('duplicity' => $data->{$found},
 					'column' => $found,
@@ -297,9 +300,9 @@ abstract class DbModel extends BaseModel implements IDbModel
 	}
 
 	/** @return Nette\Database\Table\Selection */
-	public function getDb()
+	public function getDb($clone = TRUE)
 	{
-		return clone $this->db;
+		return $clone? clone $this->db: $this->db;
 	}
 
 	public function getPrimary()
