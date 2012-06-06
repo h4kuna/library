@@ -6,6 +6,7 @@ div.clear{
 
 .hidden, .hiddenOut{
 	visibility: hidden;
+	display: none;
 }
 
 .out, .hiddenOut{
