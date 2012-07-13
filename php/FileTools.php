@@ -163,23 +163,19 @@ class FileTools extends Nette\Object
 		}
 	}
 
-	/**
-	 *
-	 * @param path $filePath
-	 * @param bool $isFile
-	 * @return bool
-	 */
-	public static function mkDir($filePath)
-	{
-		if (is_file($filePath)) {
-			$filePath = dirname($filePath);
-		}
-		if (file_exists($filePath)) {
-			return TRUE;
-		}
-		self::mkDir(dirname($filePath));
-		mkdir($filePath, 0777);
-	}
+    /**
+     * vytvoří složky rekurzivně
+     * @param path $filePath
+     * @param bool $isFile
+     * @return bool
+     */
+    public static function mkDir($filePath) {
+        if (file_exists($filePath)) {
+            return TRUE;
+        }
+        self::mkDir(dirname($filePath));
+        return mkdir($filePath, 0777);
+    }
 
 	/**
 	 *

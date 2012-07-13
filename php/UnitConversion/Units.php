@@ -3,77 +3,86 @@
 namespace Utility;
 
 use Nette;
+use Exchange\NumberFormat;
 
 /**
  * @property-read value
  */
-class Units extends Nette\Object
-{
-	static private $units = array('', 'K', 'M', 'G', 'T');
-	private $actualUnit;
-	private $outUnit;
-	protected $base = 1000;
-	protected $unit = 'g'; //gram
+class Units extends Nette\Object {
 
-	public function __construct($number=NULL, $outUnit=NULL)
-	{
-		if ($number) {
-			$this->setActualUnit($number);
-		}
+    static private $units = array('', 'K', 'M', 'G', 'T');
+    private $actualUnit;
+    private $outUnit;
+    protected $base = 1000;
+    protected $unit = 'g'; //gram
 
-		if ($outUnit) {
-			$this->setOutUnit($outUnit);
-		}
-	}
+    /** @var NumberFormat */
+    protected $format;
 
-	public function setOutUnit($outUnit)
-	{
-		$this->outUnit = $this->unitInfo($outUnit);
-	}
+    public function __construct(NumberFormat $format = NULL, $number = NULL, $outUnit = NULL) {
+        if ($number) {
+            $this->setActualUnit($number);
+        }
 
-	/**
-	 * means gram, litr, byte
-	 */
-	public function setUnit($v)
-	{
-		$this->unit = $v;
-	}
+        if ($outUnit) {
+            $this->setOutUnit($outUnit);
+        }
 
-	/**
-	 *
-	 * @param string $number 128M
-	 */
-	public function setActualUnit($number)
-	{
-		$unit = substr($number, -1);
-		if (is_numeric($unit)) {
-			$unit = '';
-		} else {
-			$number = substr($number, 0, -1);
-		}
+        $this->format = ($format) ? $format : new NumberFormat;
+        $this->format->setSymbol($this->outUnit);
+    }
 
-		$this->actualUnit = $this->unitInfo($unit, $number);
-	}
+    public function setOutUnit($outUnit) {
+        $this->outUnit = $this->unitInfo($outUnit);
+    }
 
-	public function getValue()
-	{
-		return ($this->actualUnit['value'] * pow($this->base, $this->actualUnit['key'] - $this->outUnit['key'])) . $this->outUnit['unit'] . $this->unit;
-	}
+    /**
+     * means gram, litr, byte
+     */
+    public function setUnit($v) {
+        $this->unit = $v;
+    }
 
-	private function unitInfo($unit, $value = 0)
-	{
-		$unit = strtoupper($unit);
-		$key = array_search($unit, self::$units);
-		if ($key === FALSE) {
-			throw new \RuntimeException('Unit is\'t supported, yet. ' . $unit);
-		}
-		return array('key' => $key, 'unit' => $unit, 'value' => intval($value));
-	}
+    /**
+     *
+     * @param string $number 128M
+     */
+    public function setActualUnit($number) {
+        $unit = substr($number, -1);
+        if (is_numeric($unit)) {
+            $unit = '';
+        } else {
+            $number = substr($number, 0, -1);
+        }
 
-	public static function recount($number, $outUnit)
-	{
-		$unit = new static($number, $outUnit);
-		return $unit->getValue();
-	}
+        $this->actualUnit = $this->unitInfo($unit, $number);
+    }
+
+    public function getValue() {
+        $f = $this->getFormat();
+        $f->setSymbol($this->outUnit['unit'] . $this->unit);
+        return $f->setNumber(($this->actualUnit['value'] * pow($this->base, $this->actualUnit['key'] - $this->outUnit['key'])));
+    }
+
+    /**
+     * @return Exchange\NumberFormat
+     */
+    protected function getFormat() {
+        return clone $this->format;
+    }
+
+    private function unitInfo($unit, $value = 0) {
+        $unit = strtoupper($unit);
+        $key = array_search($unit, self::$units);
+        if ($key === FALSE) {
+            throw new \RuntimeException('Unit is\'t supported, yet. ' . $unit);
+        }
+        return array('key' => $key, 'unit' => $unit, 'value' => intval($value));
+    }
+
+    public static function recount($number, $outUnit) {
+        $unit = new static(NULL, $number, $outUnit);
+        return $unit->getValue();
+    }
 
 }
