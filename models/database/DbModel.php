@@ -57,7 +57,7 @@ class DbModel extends BaseModel {
     public function delete($id, $column = NULL, $by = NULL) {
         $out = NULL;
         if ($column && $id) {
-            $out = $this->fetch($id, $column);
+            $out = $this->fetch($id, $column, $by);
         }
 
         $delete = $this->getCondition($by, $id)->delete();
