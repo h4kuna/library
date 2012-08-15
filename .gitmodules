@@ -19,3 +19,6 @@
 [submodule "3rdParty/php/Invoice"]
 	path = 3rdParty/php/Invoice
 	url = git@github.com:h4kuna/Nette-InvoiceControl.git
+[submodule "3rdParty/php/NotORM"]
+	path = 3rdParty/php/NotORM
+	url = git://github.com/vrana/notorm.git
