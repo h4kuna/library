@@ -2,23 +2,17 @@
 
 namespace Models;
 
-use Nette;
-
-/**
- * Description of DbModel
- * @property-read Nette\Database\Table\Selection $db
- */
-abstract class DbModel extends BaseModel implements IDbModel {
-
-    /** @var Nette\Database\Table\Selection */
-    private $db;
+class DbModel extends BaseModel {
 
     /** @var string */
     protected $table = 'CHANGE IT';
 
     /** @var string */
     protected $primary;
-    private $sqlCalc = 0;
+    protected $sqlCalc = 0;
+    private $db;
+    protected $staticColumn = array();
+    protected $conn;
 
     /**
      * moznosti zapisu
@@ -30,20 +24,6 @@ abstract class DbModel extends BaseModel implements IDbModel {
      * !column => validace bude ignorována
      */
     protected $mapper = array();
-
-    /** @var Nette\Database\Connection */
-    protected $conn;
-    private $staticColumn = array();
-
-    public function __construct(Nette\DI\Container $container) {
-        parent::__construct($container);
-        $this->conn = $this->container->database;
-        $this->db = $this->conn->table($this->table);
-
-        if ($this->primary === NULL) {
-            $this->primary = $this->db->primary;
-        }
-    }
 
     /**
      * @example $this->find(1, 'col1, col2', 'column'); alias  $this->findByColumn(1, 'col1, col2');
@@ -61,6 +41,29 @@ abstract class DbModel extends BaseModel implements IDbModel {
         return parent::__call($name, $args);
     }
 
+    public function setDb($v) {
+        if (!$this->db) {
+            $this->db = $v;
+        }
+    }
+
+    //-----------------elementární metody
+
+    public function update(array $data, $id, $by = NULL) {
+        $this->prepareData($data);
+        return $this->getCondition($by, $id)->update($data);
+    }
+
+    public function delete($id, $column = NULL, $by = NULL) {
+        $out = NULL;
+        if ($column && $id) {
+            $out = $this->fetch($id, $column);
+        }
+
+        $delete = $this->getCondition($by, $id)->delete();
+        return ($out !== NULL) ? $out : $delete;
+    }
+
     /**
      * nastavi povinny sloupce
      * @param type $col
@@ -76,120 +79,48 @@ abstract class DbModel extends BaseModel implements IDbModel {
         }
     }
 
-//-----------------elementární metody
+    /**
+     * faster?? I mean NO!!
+     * switch countig for use SQL_CALC_FOUND_ROWS
+     * call this method before findAll
+     * @example
+     * $model->willCount(); //maybe faster :)
+     * $model->findAll('*', 1);
+     * dump($model->count());
+     */
+    public function willCount() {
+        $this->sqlCalc = TRUE;
+    }
+
+    public function getDb($clone = TRUE) {
+        return $clone ? clone $this->db : $this->db;
+    }
+
+    public function getTable($model = NULL) {
+        if ($model === NULL)
+            return $this->table;
+
+        return $this->context->{$model}->getTable();
+    }
+
+    public function getPrimary() {
+        return $this->primary;
+    }
+
+    public function getConnection() {
+        return $this->conn;
+    }
 
     /**
-     *
+     * orizne pole na požadované sloupce
      * @param array $data
-     * @param type $id
-     * @param type $by
      * @return type
      */
-    public function update(array $data, $id, $by = NULL) {
-        $this->prepareData($data);
-        return $this->getCondition($id, $by)->update($data);
+    public function shave(array $data) {
+        return array_intersect_key($data, $this->mapper);
     }
 
-    public function insert(array $data, $lastId = FALSE) {
-        $this->prepareData($data);
-
-        try {
-            $res = $this->getDb()->insert($data);
-            if ($lastId) {
-                $id = $res[$this->primary];
-            }
-        } catch (\PDOException $e) {
-            if ($e->getCode() != 23000 || $lastId != TRUE) {
-                throw $e;
-            }
-            $v = $this->getVersion();
-            $found = array();
-
-            if ($v < 5.1) {
-                if (!preg_match('~\'(.*)\'~U', $e->getMessage(), $found)) {
-                    throw $e;
-                }
-                $found = array_search($found[1], $data);
-            } else {
-                if (!preg_match('~Duplicate entry \'(.+)\' for key \'(.+)\'$~U', $e->getMessage(), $found)) {
-                    throw $e;
-                }
-                $found = ($found[2] == 'PRIMARY') ? $this->primary : $found[2];
-            }
-
-            //je to danne do pole aby bylo pozna ze nebyl zaznam vlozen/upraven
-            if (!isset($data[$found])) {
-                return $data;
-            }
-
-            $data = $this->fetch($data[$found], '*', $found);
-            $id = array('duplicity' => $data->{$found},
-                'column' => $found,
-                'all' => $data->toArray());
-        }
-
-        return ($lastId) ? $id : $res;
-    }
-
-    public function delete($id, $column = NULL, $by = NULL) {
-        $out = NULL;
-        if ($column && $id) {
-            $out = $this->fetch($id, $column);
-        }
-
-        $delete = $this->getCondition($id, $by)->delete();
-        return ($out !== NULL) ? $out : $delete;
-    }
-
-    /**
-     *
-     * @param type $id
-     * @param type $columns
-     * @param type $by
-     * @return \Nette\Database\Table\Selection
-     */
-    public function find($id, $columns = '*', $by = NULL) {
-        return $this->findAll($columns, $id, $by);
-    }
-
-    /**
-     *
-     * @param type $id
-     * @param type $columns
-     * @param type $by
-     * @return \Nette\Database\Table\ActiveRow
-     */
-    public function fetch($id, $columns = '*', $by = NULL) {
-        return $this->find($id, $columns, $by)->fetch();
-    }
-
-    /**
-     *
-     * @param type $columns
-     * @param type $parameters
-     * @param type $condition
-     * @return \Nette\Database\Table\Selection
-     */
-    public function findAll($columns = '', $parameters = NULL, $condition = NULL) {
-
-        if (!$columns) {
-            $columns = '*';
-        }
-
-        if ($this->sqlCalc) {
-            $columns = 'SQL_CALC_FOUND_ROWS ' . $columns;
-        }
-
-        return $this->getCondition($parameters, $condition)->select($columns);
-    }
-
-    /**
-     *
-     * @param type $by
-     * @param type $id
-     * @return Nette\Database\Table\Selection
-     */
-    private function getCondition($parameters, $condition) {
+    protected function getCondition($condition, $parameters) {
 
         if ($condition === NULL) {
             $condition = $this->primary;
@@ -206,119 +137,6 @@ abstract class DbModel extends BaseModel implements IDbModel {
         }
 
         return $sql;
-    }
-
-    /**
-     * faster?? I mean NO!!
-     * switch countig for use SQL_CALC_FOUND_ROWS
-     * call this method before findAll
-     * @example
-     * $model->willCount(); //maybe faster :)
-     * $model->findAll('*', 1);
-     * dump($model->count());
-     */
-    public function willCount() {
-        $this->sqlCalc = TRUE;
-    }
-
-    public function count() {
-        if ($this->sqlCalc) {
-            $this->sqlCalc = FALSE;
-            $sql = $this->conn->query('SELECT FOUND_ROWS() AS c');
-        } else {
-            $sql = self::findAll('COUNT(*) AS c');
-        }
-
-        return intval($sql->fetch()->c);
-    }
-
-    /**
-     * orizne pole na požadované sloupce
-     * @param array $data
-     * @return type
-     */
-    public function shave(array $data) {
-        return array_intersect_key($data, $this->mapper);
-    }
-
-//-----------------
-
-    public function estimateCount() {
-        if (!($this->conn->getSupplementalDriver() instanceof \Nette\Database\Drivers\MySqlDriver)) {
-            throw new \RuntimeException('Now is only for MySql!');
-        }
-        $res = $this->conn->fetch('SHOW TABLE STATUS LIKE \'' . $this->table . '\'');
-        return ($res['Engine'] == 'InnoDB') ? $res['Rows'] : NULL;
-    }
-
-    public function getFields() {
-        $col = NULL;
-        if (func_num_args()) {
-            $col = 'FROM ' . implode(' ', func_get_args());
-        }
-        return $this->conn->query('SHOW COLUMNS ' . $col . ' FROM ' . $this->table . ';')->fetchAll();
-    }
-
-    public function getVersion() {
-        $cache = $this->getCache('Models');
-        $key = 'version';
-        if (isset($cache[$key])) {
-            return $cache[$key];
-        }
-        return $cache->save($key, floatval(substr($this->conn->query('SELECT version() AS v')->fetch()->v, 0, 3)), array(self::EXPIRE => 'tomorrow'));
-    }
-
-//-----------------transaction
-
-    public function begin() {
-        if (!$this->conn->inTransaction()) {
-            return $this->conn->beginTransaction();
-        }
-        return TRUE;
-    }
-
-    public function commit() {
-        if ($this->conn->inTransaction()) {
-            return $this->conn->commit();
-        }
-        return FALSE;
-    }
-
-    public function rollback() {
-        if ($this->conn->inTransaction()) {
-            return $this->conn->rollBack();
-        }
-        return FALSE;
-    }
-
-//-----------------
-
-    public function getTable($model = NULL) {
-        if ($model === NULL)
-            return $this->table;
-
-        return $this->models->{$model}->getTable();
-    }
-
-    /** @return Nette\Database\Table\Selection */
-    public function getDb($clone = TRUE) {
-        return $clone ? clone $this->db : $this->db;
-    }
-
-    public function getPrimary() {
-        return $this->primary;
-    }
-
-    public function lastInsertId() {
-        $seq = NULL;
-        if ($this->conn->getSupplementalDriver() instanceof Nette\Database\Drivers\PgSqlDriver) {
-            $seq = $this->table . '_' . $this->primary . '_seq';
-        }
-        return $this->conn->lastInsertId($seq);
-    }
-
-    public function getConnection() {
-        return $this->conn;
     }
 
 //nastroje na upravu hodnot pred ulozenim do db
@@ -360,28 +178,6 @@ abstract class DbModel extends BaseModel implements IDbModel {
                 $data[$column] = call_user_func_array($f, array($data, $column, $args));
             }
         }
-    }
-
-    protected function fetchArray(\Nette\Database\Table\Selection $sql, $key = NULL) {
-        $out = array();
-        $c = 0;
-        foreach ($sql as $v) {
-            $k = $key === NULL ? $c : $v->{$key};
-            $out[$k] = $v->toArray();
-            ++$c;
-        }
-        return $out;
-    }
-
-//-----------------
-
-    /**
-     * literal
-     * @param type $v
-     * @return \Nette\Database\SqlLiteral
-     */
-    protected function l($v) {
-        return new \Nette\Database\SqlLiteral($v);
     }
 
 }

@@ -3,67 +3,56 @@
 namespace Models;
 
 use Nette\Caching\Cache,
-		Nette\Object,
-		Nette\DI\Container;
+    Nette\Object,
+    Nette\DI\Container;
 
 /**
  * @property-read $models
  * @property-read Nette\Caching\Cache $cache
  * @property-read Nette\Http\SessionSection
  */
-abstract class BaseModel extends Object
-{
-	/** @var Container */
-	protected $container;
+abstract class BaseModel extends Object {
 
-	const ITEM_PER_PAGE = 50;
+    const ZERO_TIME = '00-00-00 00:00:00';
 
-	const EXPIRE = Cache::EXPIRATION;
+    /** @var Container */
+    protected $context;
 
-	public function __construct(Container $container)
-	{
-		$this->container = $container;
-	}
+    const ITEM_PER_PAGE = 50;
+    const EXPIRE = Cache::EXPIRATION;
 
-	public function getSession($expiretion='+14 days', $namespace = NULL)
-	{
-		if ($namespace === NULL) {
-			$namespace = get_class($this);
-		}
-		$session = $this->container->session->getSection($namespace);
-		$session->setExpiration($expiretion);
-		return $session;
-	}
+    public function __construct(Container $context) {
+        $this->context = $context;
+    }
 
-	/** @return \Nette\Security\User */
-	public function getUser()
-	{
-		return $this->container->user;
-	}
+    public function getSession($expiretion = '+14 days', $namespace = NULL) {
+        if ($namespace === NULL) {
+            $namespace = get_class($this);
+        }
+        $session = $this->context->nette->createSection($namespace);
+        $session->setExpiration($expiretion);
+        return $session;
+    }
 
-	/** @return BaseModel */
-	public function getModels()
-	{
-		return $this->container->models;
-	}
+    /** @return \Nette\Security\User */
+    public function getUser() {
+        return $this->context->user;
+    }
 
-	public function getCache($namespace = NULL)
-	{
-		if (!$namespace) {
-			$namespace = get_class($this);
-		}
-		return $this->container->cacheLoader->getLoader($namespace);
-	}
+    public function getCache($namespace = NULL) {
+        if (!$namespace) {
+            $namespace = get_class($this);
+        }
+        return $this->context->nette->createCache($namespace);
+    }
 
-	public function __toString()
-	{
-		return $this->getReflection()->getName();
-	}
+    public function __toString() {
+        return $this->getReflection()->getName();
+    }
 
-	/**  @return \Nette\Security\Identity */
-	public function getIdentity()
-	{
-		return $this->getUser()->getIdentity();
-	}
+    /**  @return \Nette\Security\Identity */
+    public function getIdentity() {
+        return $this->getUser()->getIdentity();
+    }
 
 }
