@@ -55,4 +55,17 @@ abstract class BaseModel extends Object {
         return $this->getUser()->getIdentity();
     }
 
+    public function getParameters($key = NULL) {
+        $out = $this->context->parameters;
+
+        if (!$key) {
+            return $out;
+        }
+
+        foreach (explode('.', $key) as $v) {
+            $out = $out[$v];
+        }
+        return $out;
+    }
+
 }
