@@ -110,7 +110,7 @@ abstract class DbModelNotOrm extends DbModel implements IDbModel {
      * @param type $array
      * @return type
      */
-    protected function fetchArray(\NotORM_Result $sql, $key = NULL, $array = FALSE) {
+    public function fetchArray(\NotORM_Result $sql, $key = NULL, $array = FALSE) {
         $out = array();
         $c = 0;
         foreach ($sql as $v) {

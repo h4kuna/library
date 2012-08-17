@@ -149,7 +149,12 @@ class DbModel extends BaseModel {
                 continue;
             }
 
-            if (!isset($data[$column]) || !$fce) {
+            if (substr($column, 0, 1) == '+') {
+                $column = substr($column, 1);
+                $data[$column] = NULL;
+            }
+
+            if (!array_key_exists($column, $data) || !$fce) {
                 continue;
             }
 
