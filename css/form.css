@@ -1,4 +1,4 @@
-input + span, select + span{
+input + span, select + span, textarea + span{
 	color: red;
 	margin-left: 3px;
 }

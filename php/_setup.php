@@ -35,5 +35,3 @@ function pd() {
 	if (!Debugger::$productionMode)
 		die();
 }
-
-require_once 'betterPhp/array.php';
