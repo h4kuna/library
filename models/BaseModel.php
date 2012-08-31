@@ -13,7 +13,7 @@ use Nette\Caching\Cache,
  */
 abstract class BaseModel extends Object {
 
-    const ZERO_TIME = '00-00-00 00:00:00';
+    const ZERO_TIME = '0000-00-00 00:00:00';
 
     /** @var Container */
     protected $context;
