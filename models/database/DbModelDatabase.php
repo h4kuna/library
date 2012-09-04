@@ -72,7 +72,7 @@ abstract class DbModelDatabase extends DbModel implements IDbModel {
      * @return \Nette\Database\Table\Selection
      */
     public function find($id, $columns = '*', $by = NULL) {
-        return $this->findAll($columns, $id, $by);
+        return parent::find($id, $columns, $by);
     }
 
     /**
@@ -83,7 +83,7 @@ abstract class DbModelDatabase extends DbModel implements IDbModel {
      * @return \Nette\Database\Table\ActiveRow
      */
     public function fetch($id, $columns = '*', $by = NULL) {
-        return $this->find($id, $columns, $by)->fetch();
+        return parent::fetch($id, $columns, $by);
     }
 
     /**
@@ -94,16 +94,7 @@ abstract class DbModelDatabase extends DbModel implements IDbModel {
      * @return \Nette\Database\Table\Selection
      */
     public function findAll($columns = '', $parameters = NULL, $condition = NULL) {
-
-        if (!$columns) {
-            $columns = '*';
-        }
-
-        if ($this->sqlCalc) {
-            $columns = 'SQL_CALC_FOUND_ROWS ' . $columns;
-        }
-
-        return $this->getCondition($parameters, $condition)->select($columns);
+        return parent::findAll($columns, $parameters, $condition);
     }
 
     public function count() {

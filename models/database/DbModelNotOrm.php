@@ -39,7 +39,7 @@ abstract class DbModelNotOrm extends DbModel implements IDbModel {
      * @return NotORM_Result
      */
     public function find($id, $columns = '*', $by = NULL) {
-        return $this->findAll($columns, $id, $by);
+        return parent::find($id, $columns, $by);
     }
 
     /**
@@ -50,7 +50,7 @@ abstract class DbModelNotOrm extends DbModel implements IDbModel {
      * @return NotORM_Row
      */
     public function fetch($id, $columns = '*', $by = NULL) {
-        return $this->find($id, $columns, $by)->fetch();
+        return parent::fetch($id, $columns, $by);
     }
 
     /**
@@ -60,17 +60,8 @@ abstract class DbModelNotOrm extends DbModel implements IDbModel {
      * @param type $itemsPerPage
      * @return NotORM_Result
      */
-    public function findAll($columns = '', $parameters = NULL, $condition = NULL) {
-
-        if (!$columns) {
-            $columns = '*';
-        }
-
-        if ($this->sqlCalc) {
-            $columns = 'SQL_CALC_FOUND_ROWS ' . $columns;
-        }
-
-        return $this->getCondition($condition, $parameters)->select($columns);
+    public function findAll($columns = '', $condition = NULL, $parameters = NULL) {
+        return parent::findAll($columns, $condition, $parameters);
     }
 
     public function query($sql) {
@@ -91,7 +82,9 @@ abstract class DbModelNotOrm extends DbModel implements IDbModel {
 //-----------------transaction
 
     public function begin() {
-        $this->conn->transaction = 'begin';
+        if (!$this->context->pdo->inTransaction()) {
+            $this->conn->transaction = 'begin';
+        }
     }
 
     public function commit() {

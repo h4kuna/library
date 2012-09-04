@@ -52,5 +52,10 @@ interface IDbModel {
     public function commit();
 
     public function rollback();
+
+    /**
+     * literal
+     */
+    public function l();
 }
 

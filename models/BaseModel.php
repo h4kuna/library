@@ -41,13 +41,21 @@ abstract class BaseModel extends Object {
 
     public function getCache($namespace = NULL) {
         if (!$namespace) {
-            $namespace = get_class($this);
+            $namespace = $this->__toString();
         }
         return $this->context->nette->createCache($namespace);
     }
 
+    public function getCacheFile($touch = FALSE) {
+        $file = $this->getParameters('tempDir') . DIRECTORY_SEPARATOR . str_replace('\\', '_', $this->__toString()) . '.cache';
+        if (!file_exists($file) || $touch) {
+            touch($file);
+        }
+        return array(\Nette\Caching\Cache::FILES => $file);
+    }
+
     public function __toString() {
-        return $this->getReflection()->getName();
+        return get_class($this);
     }
 
     /**  @return \Nette\Security\Identity */

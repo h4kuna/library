@@ -13,6 +13,7 @@ class DbModel extends BaseModel {
     private $db;
     protected $staticColumn = array();
     protected $conn;
+    private $lang;
 
     /**
      * moznosti zapisu
@@ -62,6 +63,27 @@ class DbModel extends BaseModel {
 
         $delete = $this->getCondition($by, $id)->delete();
         return ($out !== NULL) ? $out : $delete;
+    }
+
+    public function findAll($columns = '', $condition = NULL, $parameters = NULL) {
+
+        if (!$columns) {
+            $columns = '*';
+        }
+
+        if ($this->sqlCalc) {
+            $columns = 'SQL_CALC_FOUND_ROWS ' . $columns;
+        }
+
+        return $this->getCondition($condition, $parameters)->select($columns);
+    }
+
+    public function find($id, $columns = '*', $by = NULL) {
+        return $this->findAll($columns, $by, $id);
+    }
+
+    public function fetch($id, $columns = '*', $by = NULL) {
+        return $this->find($id, $columns, $by)->fetch();
     }
 
     /**
@@ -123,7 +145,7 @@ class DbModel extends BaseModel {
     protected function getCondition($condition, $parameters) {
 
         if ($condition === NULL) {
-            $condition = $this->primary;
+            $condition = $this->table . '.' . $this->primary;
         }
 
         $sql = $this->getDb();
@@ -183,6 +205,10 @@ class DbModel extends BaseModel {
                 $data[$column] = call_user_func_array($f, array($data, $column, $args));
             }
         }
+    }
+
+    public function getLang() {
+        return 'cs';
     }
 
 }
