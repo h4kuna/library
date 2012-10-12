@@ -37,7 +37,7 @@ abstract class TreeModel extends DbModelNotOrm {
 
     public function getInDeep($deep = 0, $parentId = NULL, $column = '*') {
         $sql = $this->findAll($column)->where($this->getDeep(), $deep);
-        if($parentId) {
+        if ($parentId) {
             $sql->where($this->getParent(), $parentId);
         }
         return $sql;
@@ -179,7 +179,7 @@ abstract class TreeModel extends DbModelNotOrm {
         $l = $this->field[self::LEFT];
         $this->begin();
         $row = $this->findAll('IFNULL( MAX ( ' . $r . '), 0)  + 1 AS  ' . $l . ', ' .
-             'IFNULL(MAX(' . $r . '),  0) + 2 AS ' . $r)->fetch()->toArray();
+                        'IFNULL(MAX(' . $r . '),  0) + 2 AS ' . $r)->fetch()->toArray();
         //deep has default 0 in database
         $out = $this->insert($data + $row, $lastId);
         $this->commit();

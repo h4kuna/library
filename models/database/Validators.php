@@ -40,7 +40,7 @@ class Validators extends \Utility\NonObject {
     }
 
     public static function float(array $array, $key) {
-        return floatval(str_replace(array(',', ' '), array('.', ''), $array[$key]));
+        return str_replace(array(',', ' '), array('.', ''), $array[$key]);
     }
 
     public static function fNull(array $array, $key) {
@@ -187,5 +187,9 @@ class Validators extends \Utility\NonObject {
     public static function onlyAlphaNumeric(array $array, $key) {
         return preg_replace('~[^A-Z0-9]~i', '', $array[$key]);
     }
+
+    public static function abs(array $array, $key) {
+        return abs($array[$key]);
+}
 
 }

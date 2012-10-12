@@ -62,7 +62,7 @@ class DbModel extends BaseModel {
         }
 
         $delete = $this->getCondition($by, $id)->delete();
-        return ($out !== NULL) ? $out : $delete;
+        return $out ? $out : $delete;
     }
 
     public function findAll($columns = '', $condition = NULL, $parameters = NULL) {
@@ -203,12 +203,20 @@ class DbModel extends BaseModel {
                 }
 
                 $data[$column] = call_user_func_array($f, array($data, $column, $args));
+
+                if ($data[$column] === FALSE) {
+                    unset($data[$column]);
+                }
             }
         }
     }
 
-    public function getLang() {
-        return 'cs';
+    public function delta(array $data, $key) {
+        if (empty($data[$key])) {
+            return FALSE;
+        }
+
+        return $this->l($key . ' + ?', $data[$key]);
     }
 
 }

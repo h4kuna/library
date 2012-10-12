@@ -20,15 +20,26 @@ abstract class DbModelNotOrm extends DbModel implements IDbModel {
     }
 
     public function insert(array $data, $lastId = FALSE) {
-        //@todo multi inser call_user_func_array(callback(self::findAll(), 'insert'), $data);
+        if ($lastId === 'multi') {
+            foreach ($data as &$v) {
+                $this->checkInsetData($v);
+            }
+            unset($v);
+            return call_user_func_array(callback($this->getDb(), 'insert'), $data);
+        }
+
+        $this->checkInsetData($data);
+        $res = $this->getDb()->insert($data);
+        return $lastId ? $res[$this->primary] : $res;
+    }
+
+    private function checkInsetData(array &$data) {
         $this->prepareData($data);
         foreach ($this->staticColumn as $k => $v) {
             if (!isset($data[$k])) {
                 $data[$k] = $v;
             }
         }
-        $res = $this->getDb()->insert($data);
-        return $lastId ? $res[$this->primary] : $res;
     }
 
     /**
@@ -64,8 +75,41 @@ abstract class DbModelNotOrm extends DbModel implements IDbModel {
         return parent::findAll($columns, $condition, $parameters);
     }
 
+    /**
+     *
+     * @param type $sql
+     * @return \PDOStatement
+     */
     public function query($sql) {
-        return $this->context->pdo->query($sql)->fetch(\PDO::FETCH_ASSOC);
+        $pdo = $this->context->pdo;
+        $sth = $pdo->prepare($sql);
+        $sth->setFetchMode(\PDO::FETCH_ASSOC);
+        $this->pdoBindParam(array_slice(func_get_args(), 1), $sth)->execute();
+        return $sth;
+//        if (strtolower(substr($sql, 0, 3)) == 'call') {
+//            return $sth->execute();
+//        }
+        //return $pdo->query($sth);
+    }
+
+    private function pdoBindParam(array $params, \PDOStatement $sth) {
+        foreach ($params as $k => $v) {
+            $sth->bindParam($k + 1, $v, $this->pdoType($v));
+        }
+        return $sth;
+    }
+
+    private function pdoType($v) {
+        switch (gettype($v)) {
+            case 'boolean':
+                return \PDO::PARAM_BOOL;
+            case 'integer':
+                return \PDO::PARAM_INT;
+            case 'NULL':
+                return \PDO::PARAM_NULL;
+            default:
+                return \PDO::PARAM_STR;
+        }
     }
 
     public function count() {
@@ -121,7 +165,19 @@ abstract class DbModelNotOrm extends DbModel implements IDbModel {
      * @return \Nette\Database\SqlLiteral
      */
     public function l($v = 'NOW()') {
-        return new \NotORM_Literal($v);
+        $l = new \NotORM_Literal($v);
+        $param = func_get_args();
+        array_shift($param);
+        $l->parameters = $param;
+        return $l;
+    }
+
+    public function getLastError() {
+        $res = $this->query('CALL error_get_last()')->fetch();
+        if (!$res['code']) {
+            return FALSE;
+        }
+        return $res;
     }
 
 }
