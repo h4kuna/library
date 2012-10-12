@@ -1,13 +1,11 @@
 Disallow: /css
 Disallow: /js
+Disallow: /nette
 Disallow: /3rdParty/css
 Disallow: /3rdParty/js
-Disallow: /nette/nette/client-side
-Disallow: /nette/nette/tests
 Disallow: /3rdParty/php/Texy/documentation
 Disallow: /3rdParty/php/Texy/examples
 Disallow: /3rdParty/php/Texy/icons
 Disallow: /3rdParty/php/Texyla
 Disallow: /3rdParty/php/Zend
 Disallow: /3rdParty/php/MPDF
-Disallow: /3rdParty/php/original.addons/VisualPaginator
