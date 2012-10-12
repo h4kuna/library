@@ -1,7 +1,7 @@
-/3rdParty/php/Zend/
-/3rdParty/php/MPDF/
-/nbproject
-/autoload.php
-/h4kuna
-/composer
-/nette
+3rdParty/php/Zend/
+3rdParty/php/MPDF/
+nbproject/
+autoload.php
+#/h4kuna
+composer/
+nette/
