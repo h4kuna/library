@@ -2,6 +2,8 @@
 3rdParty/php/MPDF/
 nbproject/
 autoload.php
-#/h4kuna
+h4kuna/
+notorm/
 composer/
 nette/
+webloader/
