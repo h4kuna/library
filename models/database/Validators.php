@@ -7,7 +7,7 @@ use Nette\Utils\Strings;
 /**
  * automatické jednoduché validátory dat pro db
  */
-class Validators extends \Utility\NonObject {
+class Validators extends \h4kuna\NonObject {
 
     public static function webalize(array $array, $key) {
         return Strings::webalize($array[$key]);
@@ -128,7 +128,7 @@ class Validators extends \Utility\NonObject {
                 return NULL;
             }
 
-            return ($point) ? \Utility\Feast::czechDate2Sql($date) : $date;
+            return ($point) ? \h4kuna\Feast::czechDate2Sql($date) : $date;
         }
 
         if (isset($array[$key]['year'])) {
