@@ -1,18 +1,19 @@
 #!/bin/bash
 
-STATUS='pull'
+STATUS='status'
 
 case $1 in
-     -s|--status) STATUS='status';;
+     --pull) STATUS='status';;
+     --push) STATUS='push';;
 esac
 
 cd `dirname "$0"`
-repositories=('gettext-latte' 'experimental' 'fio' 'iterators' 'static' 'object-wrapper' 'unit-conversion' 'date-time' 'curl' 'tests' 'exchange' 'number-format' 'mutex' 'file')
+repositories=('curl' 'date-time' 'exchange' 'experimental' 'file' 'fio' 'gettext-latte' 'iterators' 'mutex' 'number-format' 'object-wrapper' 'static' 'tests' 'unit-conversion' )
 
 
 for dir in ${repositories[*]}
 do
-    echo 
+    echo
     echo "$dir:"
     if [ -d $dir ]
     then

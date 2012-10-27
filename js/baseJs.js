@@ -1,80 +1,71 @@
-
-/**
- * @deprecated
- * vlkadat do onclick pac to jinak nemaka ve firefoxu
- */
-function confirmDelete(delUrl, message) {
-	if(!message) {
-		message = 'Opravdu si přejete mazat?';
-	}
-	if (confirm(message)) {
-		document.location = delUrl;
-	}
-
-	return false;
-}
-
 /**
  * funkce zobrazi a schova flash message
  */
-function flashMessage ()
-{
-	var flash = $('#flash');
+function flashMessage (id) {
+    if(!id) {
+        id = 'flash';
+    }
+    $flash = $('#'+id);
+    $('div', $flash).click(function(){
+        $(this).fadeOut('fast');
+    });
 
-	$('a', flash).attr('href', '#').click(function() {
-		flash.stop().fadeOut('fast');
-		return false;
-	});
-
-	flash.delay(15000).fadeOut('slow');
+    $flash.delay(7000).fadeOut('slow');
 }
 
 
+//mazani s potvrzenim
+function confirmDelete(selector) {
+    $(selector).click(function(){
+        $this = $(this);
+        message = $this.attr('title');
+        if(!message) {
+            message = 'Opravdu si přejete mazat?';
+        }
+
+        if (confirm(message)) {
+            $this.attr('href', $this.attr('delete'));
+            return true;
+        }
+
+        return false;
+    });
+}
 /**
  * funkce spouštěné po načtení prohlížeče
  */
 $(document).ready(function(){
-	//vlozeni kurzoru
-	if(!$(':focus').length) {
-		$('.cursor:eq(0)').focus();
-	}
 
-	//mazani s potvrzenim
-	$('a[delete]').click(function(){
-		$this = $(this);
-		message = $this.attr('message');
-		if(!message) {
-			message = 'Opravdu si přejete mazat?';
-		}
+    flashMessage();
 
-		if (confirm(message)) {
-			$this.attr('href', $this.attr('delete'));
-			return true;
-		}
+    //vlozeni kurzoru
+    if(!$(':focus').length) {
+        $('.cursor:eq(0)').focus();
+    }
 
-		return false;
-	});
+    //mazani s potvrzenim
+    confirmDelete('a[delete]');
 
-	//placholder
-	if(!('placeholder' in document.createElement('input'))) {
-		$('[placeholder]').blur(function () {
-			$this = $(this);
-			placeholder = $this.attr('placeholder');
+    //placholder
+    if(!('placeholder' in document.createElement('input'))) {
+        $('[placeholder]').blur(function () {
+            $this = $(this);
+            placeholder = $this.attr('placeholder');
 
-			if(placeholder != '' && $this.val() == '')
-			{
-				$this.after( $('<input class="hasPlaceholder" type="text">')
-					.val( $this.attr('placeholder')).attr('_id', $this.attr('id') )
-					.bind('focus', function(){
-						$this = $(this);
-						$('#' + $this.attr('_id')).css({
-							'display': 'inline-block'
-						}).focus();
-						$this.remove();
-					})).css( {
-					'display': 'none'
-				} );
-			}
-		}).blur();
-	}
-})
+            if(placeholder != '' && $this.val() == '')
+            {
+                $this.after( $('<input class="hasPlaceholder" type="text">')
+                    .val( $this.attr('placeholder')).attr('_id', $this.attr('id') )
+                    .bind('focus', function(){
+                        $this = $(this);
+                        $('#' + $this.attr('_id')).css({
+                            'display': 'inline-block'
+                        }).focus();
+                        $this.remove();
+                    })).css( {
+                    'display': 'none'
+                } );
+            }
+        }).blur();
+    }
+});
