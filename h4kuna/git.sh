@@ -8,7 +8,7 @@ case $1 in
 esac
 
 cd `dirname "$0"`
-repositories=('curl' 'date-time' 'exchange' 'experimental' 'file' 'fio' 'gettext-latte' 'iterators' 'mutex' 'number-format' 'object-wrapper' 'static' 'tests' 'unit-conversion' )
+repositories=('curl' 'data-type' 'date-time' 'exchange' 'experimental' 'file' 'fio' 'gettext-latte' 'iterators' 'mutex' 'number-format' 'object-wrapper' 'static' 'tests' 'unit-conversion' )
 
 
 for dir in ${repositories[*]}
