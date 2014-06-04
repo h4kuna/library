@@ -1,6 +1,0 @@
-Disallow: /css
-Disallow: /js
-Disallow: /nette
-Disallow: /nette.min
-Disallow: /Zend
-Disallow: /MPDF
