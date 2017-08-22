@@ -75,6 +75,12 @@
 [![Downloads this Month](https://img.shields.io/packagist/dm/h4kuna/number-format.svg)](https://packagist.org/packages/h4kuna/number-format)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/h4kuna/number-format/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/h4kuna/number-format/?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/h4kuna/number-format/badge.svg?branch=master)](https://coveralls.io/github/h4kuna/number-format?branch=master)
+- [object-wrapper](https://github.com/h4kuna/object-wrapper)
+[![Build Status](https://travis-ci.org/h4kuna/object-wrapper.svg?branch=master)](https://travis-ci.org/h4kuna/object-wrapper)
+[![Latest stable](https://img.shields.io/packagist/v/h4kuna/object-wrapper.svg)](https://packagist.org/packages/h4kuna/object-wrapper)
+[![Downloads this Month](https://img.shields.io/packagist/dm/h4kuna/object-wrapper.svg)](https://packagist.org/packages/h4kuna/object-wrapper)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/h4kuna/object-wrapper/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/h4kuna/object-wrapper/?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/h4kuna/object-wrapper/badge.svg?branch=master)](https://coveralls.io/github/h4kuna/object-wrapper?branch=master)
 - [upload](https://github.com/h4kuna/upload)
 [![Build Status](https://travis-ci.org/h4kuna/upload.svg?branch=master)](https://travis-ci.org/h4kuna/upload)
 [![Latest stable](https://img.shields.io/packagist/v/h4kuna/upload.svg)](https://packagist.org/packages/h4kuna/upload)
@@ -82,3 +88,10 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/h4kuna/upload/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/h4kuna/upload/?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/h4kuna/upload/badge.svg?branch=master)](https://coveralls.io/github/h4kuna/upload?branch=master)
 
+# Salamium
+- [database](https://github.com/salamium/database)
+[![Build Status](https://travis-ci.org/salamium/database.svg?branch=master)](https://travis-ci.org/salamium/database)
+[![Latest stable](https://img.shields.io/packagist/v/salamium/database.svg)](https://packagist.org/packages/salamium/database)
+[![Downloads this Month](https://img.shields.io/packagist/dm/salamium/database.svg)](https://packagist.org/packages/salamium/database)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/salamium/database/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/salamium/database/?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/salamium/database/badge.svg?branch=master)](https://coveralls.io/github/salamium/database?branch=master)
