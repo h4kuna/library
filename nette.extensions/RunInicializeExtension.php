@@ -7,25 +7,27 @@ use Nette,
 
 class RunInicializeExtension extends NDI\CompilerExtension
 {
+
 	/** @var array */
 	private $defaults = [
 		'services' => [],
 	];
 
+
 	public function loadConfiguration()
 	{
-		$this->config += $this->defaults;
+		$config = $this->config + $this->defaults;
 		$builder = $this->getContainerBuilder();
-		$config = NDI\Helpers::expand($this->config, $builder->parameters);
 		$this->defaults = [];
 		foreach ($config['services'] as $class) {
 			$this->defaults[] = $name = $this->prefix(str_replace('\\', '_', is_object($class) ? $class->getEntity() : $class));
 
 			$builder->addDefinition($name)
-				->setAutowired(FALSE)
+				->setAutowired(false)
 				->setFactory($class);
 		}
 	}
+
 
 	public function afterCompile(Nette\PhpGenerator\ClassType $class)
 	{
