@@ -2,8 +2,8 @@
 
 namespace h4kuna\Extensions;
 
-use Nette,
-	Nette\DI as NDI;
+use Nette;
+use Nette\DI as NDI;
 
 class RunInicializeExtension extends NDI\CompilerExtension
 {
@@ -12,7 +12,6 @@ class RunInicializeExtension extends NDI\CompilerExtension
 	private $defaults = [
 		'services' => [],
 	];
-
 
 	public function loadConfiguration()
 	{
@@ -27,7 +26,6 @@ class RunInicializeExtension extends NDI\CompilerExtension
 				->setFactory($class);
 		}
 	}
-
 
 	public function afterCompile(Nette\PhpGenerator\ClassType $class)
 	{
