@@ -1,0 +1,42 @@
+{
+  "name": "h4kuna/library",
+  "type": "library",
+  "description": "Any description",
+  "homepage": "https://github.com/h4kuna/library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Milan Matějček",
+      "email": "milan.matejcek@gmail.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=8.0"
+  },
+  "require-dev": {
+    "nette/tester": "^2.4",
+    "phpstan/phpstan": "^1.8",
+    "phpstan/phpstan-strict-rules": "^1.4",
+    "tracy/tracy": "^2.9"
+  },
+  "autoload": {
+    "psr-4": {
+      "h4kuna\\Library\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "h4kuna\\Library\\Tests\\": [
+        "tests/src"
+      ]
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "scripts": {
+    "phpstan": "vendor/bin/phpstan analyse",
+    "tests": "vendor/bin/tester -s -j 4 --colors 1 -s -C tests/src"
+  }
+}
