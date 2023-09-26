@@ -28,9 +28,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "h4kuna\\Library\\Tests\\": [
-        "tests/src"
-      ]
+      "h4kuna\\Library\\Tests\\": "tests/src"
     }
   },
   "config": {
