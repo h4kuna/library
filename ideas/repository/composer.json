@@ -36,7 +36,7 @@
   },
   "scripts": {
     "coverage": "vendor/bin/tester --coverage coverage.html --coverage-src src/ --colors 1 -s -C tests/src",
-    "qa": "composer stan && composer tests",
+    "qa": ["composer stan", "composer tests"],
     "stan": "vendor/bin/phpstan analyse",
     "tests": "vendor/bin/tester --colors 1 -s -C tests/src"
   }
