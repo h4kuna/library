@@ -1,39 +1,35 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace h4kuna\Extensions;
 
-use Nette;
-use Nette\DI as NDI;
+use Nette\DI\CompilerExtension;
+use Nette\PhpGenerator\ClassType;
 
-class RunInicializeExtension extends NDI\CompilerExtension
+final class RunInitializeExtension extends CompilerExtension
 {
 
-	/** @var array */
-	private $defaults = [
-		'services' => [],
-	];
+    /** @var list<string> */
+    private array $services = [];
 
-	public function loadConfiguration()
-	{
-		$config = $this->config + $this->defaults;
-		$builder = $this->getContainerBuilder();
-		$this->defaults = [];
-		foreach ($config['services'] as $class) {
-			$this->defaults[] = $name = $this->prefix(str_replace('\\', '_', is_object($class) ? $class->getEntity() : $class));
+    public function loadConfiguration(): void
+    {
+        $builder = $this->getContainerBuilder();
+        foreach ($this->config['services'] ?? [] as $class) {
+            $this->services[] = $name = $this->prefix(str_replace('\\', '_', is_object($class) ? $class->getEntity() : $class));
 
-			$builder->addDefinition($name)
-				->setAutowired(false)
-				->setFactory($class);
-		}
-	}
+            $builder->addDefinition($name)
+                ->setAutowired(false)
+                ->setFactory($class);
+        }
+    }
 
-	public function afterCompile(Nette\PhpGenerator\ClassType $class)
-	{
-		$initialize = $class->getMethod('initialize');
+    public function afterCompile(ClassType $class): void
+    {
+        $initialize = $class->getMethod('initialize');
 
-		foreach ($this->defaults as $name) {
-			$initialize->addBody('$this->{self::getMethodName(?)}();', [$name]);
-		}
-	}
+        foreach ($this->services as $name) {
+            $initialize->addBody('$this->{self::getMethodName(?)}();', [$name]);
+        }
+    }
 
 }

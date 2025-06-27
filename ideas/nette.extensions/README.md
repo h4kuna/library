@@ -18,8 +18,8 @@ For example if you need attach events...
 namespace App\Events;
 
 
-use Nette\Database,
-    Nette\Security;
+use Nette\Database;
+use Nette\Security;
 
 class Connection
 {
