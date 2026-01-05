@@ -4,5 +4,13 @@ parameters:
 		- src
 		- tests/src
 
+	exceptions:
+		check:
+			missingCheckedExceptionInThrows: true
+			tooWideThrowType: true
+		implicitThrows: false
+		checkedExceptionClasses:
+			- App\Exceptions\RuntimeException
+
 includes:
 	- vendor/phpstan/phpstan-strict-rules/rules.neon
