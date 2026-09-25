@@ -21,4 +21,4 @@ docker compose exec php sh -c 'cd <balíček> && composer stan'
 
 ## Commity
 
-Ve všech balíčcích používej [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/): `typ(scope): popis`, anglicky, imperativ. Typy `feat`, `fix`, `refactor`, `test`, `build`, `docs`, `chore`. Scope je adresář v `src/` malými písmeny (`basic`, `iterators`, `collection`, ...). Změny rozděl do commitů po logických celcích, jeden commit může obsahovat i více souborů, ale jen jednu věc. Bez atribuce Claude.
+Ve všech balíčcích používej [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/): `typ(scope): popis`, anglicky, imperativ. Typy `feat`, `fix`, `refactor`, `style`, `test`, `build`, `docs`, `chore`. Scope je adresář v `src/` malými písmeny (`basic`, `iterators`, `collection`, ...). Změny rozděl do commitů po logických celcích, jeden commit může obsahovat i více souborů, ale jen jednu věc. Bez atribuce Claude.
