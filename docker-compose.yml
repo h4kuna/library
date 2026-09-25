@@ -1,0 +1,11 @@
+services:
+  php:
+    build: .
+    working_dir: /app
+    volumes:
+      - ./repositories:/app
+      - ./var/composer:/tmp/composer
+    environment:
+      COMPOSER_HOME: /tmp/composer
+    tty: true
+    command: sleep infinity
