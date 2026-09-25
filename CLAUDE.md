@@ -17,6 +17,7 @@ docker compose exec php sh -c 'cd <balíček> && composer stan'
 - Kontejner běží jako root, Docker je rootless, takže vytvořené soubory patří uživateli na hostu. Do compose nepřidávej `user:`.
 - Composer má domov v `var/composer` (cache, `auth.json`), adresář `var/` je v `.gitignore`.
 - Chybí-li v image PHP rozšíření, doplň ho do `Dockerfile` a přebuilduj přes `docker compose up -d --build`.
+- Jinou verzi PHP (třeba pro ověření CI matice nebo `--prefer-lowest`) postav z téhož Dockerfile: `docker build --build-arg PHP_VERSION=8.2 -t h4kuna-php:8.2 .` a spusť `docker run --rm -v "$PWD/repositories/<balíček>:/app" -v "$PWD/var/composer:/tmp/composer" -e COMPOSER_HOME=/tmp/composer -w /app h4kuna-php:8.2 sh -c '...'`. Holé `php:X-cli` image nepoužívej, chybí v nich zip i unzip a composer z nich neumí stahovat.
 
 ## Commity
 
